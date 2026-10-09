@@ -1,0 +1,156 @@
+  <style id="saas-theme-update">
+    /* 1. Deep Navy Global Overlay (Option A - Preferred) */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(135deg, rgba(7, 11, 25, 0.95) 0%, rgba(15, 23, 42, 0.96) 100%);
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Set default inherited text to white so anything directly on the dark background is readable */
+    body {
+        color: #f8fafc !important;
+    }
+
+    /* 2. White / Very Light Content Cards against Dark Navy Background */
+    .bg-white, .glass-card {
+        background-color: #ffffff !important;
+        backdrop-filter: none !important;
+        border: 1px solid rgba(255, 255, 255, 0.8) !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3) !important;
+        transition: box-shadow 0.3s ease !important;
+    }
+    .bg-white:hover {
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4) !important;
+    }
+    
+    .bg-slate-50 {
+        background-color: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+    }
+    .bg-slate-100 {
+        background-color: #f1f5f9 !important;
+        border: 1px solid #e2e8f0 !important;
+    }
+
+    /* Header Exception - pure white but no hover */
+    .bg-white\/70 {
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(12px) !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+    }
+    .bg-white\/70:hover { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important; }
+
+    /* 3. Text Contrast - Very Important */
+    /* Make text directly on the background (Main Headings) bright white */
+    body .text-slate-800, body .text-slate-900, h1, h2, h3 {
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5) !important;
+    }
+    body .text-slate-700, h4 { color: #f8fafc !important; font-weight: 600 !important; }
+    body .text-slate-600 { color: #f1f5f9 !important; }
+    body .text-slate-500 { color: #cbd5e1 !important; }
+
+    /* But restore Deep Navy / Dark Slate text INSIDE the white cards for high readability! */
+    .bg-white .text-slate-800, .bg-slate-50 .text-slate-800, .bg-slate-100 .text-slate-800, .bg-white\/70 .text-slate-800,
+    .bg-white h1, .bg-white h2, .bg-white h3, .bg-slate-50 h1, .bg-white\/70 h2 {
+        color: #0f172a !important;
+        text-shadow: none !important;
+    }
+    .bg-white .text-slate-700, .bg-slate-50 .text-slate-700, .bg-white\/70 .text-slate-700 {
+        color: #334155 !important;
+        text-shadow: none !important;
+    }
+    .bg-white .text-slate-600, .bg-slate-50 .text-slate-600, .bg-white\/70 .text-slate-600 {
+        color: #475569 !important;
+        text-shadow: none !important;
+    }
+    .bg-white .text-slate-500, .bg-slate-50 .text-slate-500, .bg-white\/70 .text-slate-500 {
+        color: #64748b !important;
+        text-shadow: none !important;
+    }
+    .bg-white .text-slate-400, .bg-slate-50 .text-slate-400, .bg-white\/70 .text-slate-400 {
+        color: #94a3b8 !important;
+        text-shadow: none !important;
+    }
+
+    /* 4. Sidebar Modernization */
+    /* Deep Navy Background */
+    .bg-\\[\\#0f172a\\]\\/80 {
+        background-color: #050914 !important;
+        border-right: 1px solid rgba(255,255,255,0.05) !important;
+        backdrop-filter: none !important;
+    }
+    /* Sidebar Selected Menu */
+    aside button.bg-blue-600 {
+        background-color: #2563eb !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4) !important;
+        border: none !important;
+    }
+    aside button.bg-blue-600 .text-slate-500 {
+        color: #bfdbfe !important;
+    }
+    /* Sidebar Unselected */
+    aside button.text-slate-400 {
+        color: #94a3b8 !important;
+    }
+    aside button.text-slate-400:hover {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        color: #ffffff !important;
+    }
+    
+    /* 5. Solid, High-Contrast Status Badges and Buttons */
+    /* Remove pastel look by converting light background utility classes to solid accents */
+    span[class*="bg-"][class*="100"], span[class*="bg-"][class*="50"] {
+        color: #150606 important;
+        font-weight: 700 !important;
+        border: none !important;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2) !important;
+    }
+    .bg-emerald-100, .bg-emerald-50, .bg-green-100 { background-color: #059669 !important; }
+    .bg-rose-100, .bg-rose-50, .bg-red-100 { background-color: #e11d48 !important; }
+    .bg-amber-100, .bg-amber-50, .bg-yellow-100 { background-color: #d97706 !important; }
+    .bg-blue-100, .bg-blue-50 { background-color: #2563eb !important; }
+    .bg-purple-100, .bg-purple-50 { background-color: #7c3aed !important; }
+    .bg-orange-100, .bg-orange-50 { background-color: #ea580c !important; }
+    .bg-indigo-100, .bg-indigo-50 { background-color: #4f46e5 !important; }
+
+    /* Button specific overrides */
+    button[class*="bg-"][class*="100"], button[class*="bg-"][class*="50"] {
+        color: #0c0101 !important;
+        font-weight: 700 !important;
+        border: none !important;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15) !important;
+    }
+    button[class*="bg-rose"] { background-color: #e11d48 !important; }
+    button[class*="bg-emerald"] { background-color: #059669 !important; }
+
+    /* Ensure white buttons in dark areas remain white */
+    button.bg-white {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1) !important;
+    }
+
+    /* 6. Form Elements */
+    input, select, textarea {
+        background-color: #f8fafc !important;
+        color: #0f172a !important;
+        border: 1px solid #cbd5e1 !important;
+        font-weight: 600 !important;
+    }
+    input:focus, select:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+    }
+    input::placeholder { color: #94a3b8 !important; font-weight: 500 !important; }
+    
+    /* 7. Typography Adjustments */
+    .text-[10px], .text-xs { font-weight: 700 !important; letter-spacing: 0.05em !important; }
+    
+  </style>

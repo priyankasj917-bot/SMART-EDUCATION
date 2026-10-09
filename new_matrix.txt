@@ -1,0 +1,78 @@
+﻿{!isFaculty && (
+<div className="space-y-8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Available</p>
+                        <p className="text-3xl font-black text-emerald-600">{staffData.filter(s=>s.status==='AVAILABLE').length} Staff</p>
+                    </div>
+                    <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Busy</p>
+                        <p className="text-3xl font-black text-rose-600">{staffData.filter(s=>s.status==='BUSY').length} Staff</p>
+                    </div>
+                    <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">On Duty</p>
+                        <p className="text-3xl font-black text-purple-600">{staffData.filter(s=>s.status==='EXAM-HALL DUTY').length} Staff</p>
+                    </div>
+                    <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Leave / Permission</p>
+                        <p className="text-3xl font-black text-slate-500">{staffData.filter(s=>s.status==='LEAVE' || s.status==='HALF-DAY PERMISSION').length} Staff</p>
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-[32px] p-6 shadow-sm border border-slate-100">
+                    <div className="flex flex-col md:flex-row gap-4">
+                        <div className="flex-1 relative">
+                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><Icons.Search /></div>
+                            <input value={searchQ} onChange={e=>setSearchQ(e.target.value)} placeholder="Search staff by name..." className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 outline-none focus:border-blue-500 focus:bg-white transition-all" />
+                        </div>
+                        <select value={filterDept} onChange={e=>setFilterDept(e.target.value)} className="py-4 px-6 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 outline-none focus:border-blue-500 focus:bg-white transition-all appearance-none cursor-pointer">
+                            <option>All Departments</option>
+                            {['CSE','IT','ECE','EEE','MECH','CIVIL','VLSI','MBA','MCA'].map(d=><option key={d}>{d}</option>)}
+                        </select>
+                        <select value={filterStatus} onChange={e=>setFilterStatus(e.target.value)} className="py-4 px-6 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 outline-none focus:border-blue-500 focus:bg-white transition-all appearance-none cursor-pointer">
+                            <option>All Status</option>
+                            <option>AVAILABLE</option><option>BUSY</option><option>EXAM-HALL DUTY</option><option>LEAVE</option><option>HALF-DAY PERMISSION</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {filteredStaff.map((staff, i) => (
+                        <div key={staff.id} className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-lg transition-all">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-full blur-2xl pointer-events-none -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform"></div>
+                            <div className="flex items-start justify-between mb-4 relative z-10">
+                                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 flex items-center justify-center text-blue-500 font-black text-lg">
+                                    {staff.name.charAt(4)}
+                                </div>
+                                <span className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${statusColors[staff.status].replace('bg-','text-')} bg-slate-50 border border-slate-100`}>
+                                    <span className={`w-1.5 h-1.5 rounded-full ${statusColors[staff.status]}`}></span>
+                                    {staff.status}
+                                </span>
+                            </div>
+                            <h4 className="text-lg font-black text-slate-800 mb-1">{staff.name}</h4>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">{staff.designation}</p>
+                            
+                            <div className="space-y-2">
+                                <div className="flex justify-between items-center bg-slate-50 px-3 py-2 rounded-xl">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">ID</span>
+                                    <span className="text-xs font-black text-slate-700">{staff.id}</span>
+                                </div>
+                                <div className="flex justify-between items-center bg-slate-50 px-3 py-2 rounded-xl">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Dept</span>
+                                    <span className="text-xs font-black text-slate-700">{staff.department}</span>
+                                </div>
+                                <div className="flex justify-between items-center bg-slate-50 px-3 py-2 rounded-xl">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Room</span>
+                                    <span className="text-xs font-black text-slate-700">{staff.room}</span>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                    {filteredStaff.length === 0 && (
+                        <div className="col-span-full py-20 text-center">
+                            <p className="text-lg font-bold text-slate-400">No staff found matching criteria.</p>
+                        </div>
+                    )}
+                </div>
+</div>
+)}

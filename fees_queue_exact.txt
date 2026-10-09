@@ -1,0 +1,245 @@
+﻿    const FeesQueueSystem = ({ queueData }) => {
+        const [view, setView] = useState('form'); // form, confirmed, live, full, staff
+        const [myToken, setMyToken] = useState(null);
+        const [formData, setFormData] = useState({ student_name: 'Priyanka S', student_id: '24BCE012', department: 'IT', year: '3', service_type: 'Tuition Fee', preferred_service: 'Fee Payment' });
+        const [loading, setLoading] = useState(false);
+
+        // Auto-detect full queue for students applying
+        useEffect(() => {
+            if (view === 'form' && queueData && queueData.available === 0) setView('full');
+        }, [queueData, view]);
+
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            setLoading(true);
+            const res = await fetch('/api/fees/apply', { method: 'POST', body: JSON.stringify(formData) });
+            const data = await res.json();
+            setLoading(false);
+            if (res.ok) {
+                setMyToken(data);
+                setView('confirmed');
+            } else {
+                setView('full');
+            }
+        };
+
+        const cancelToken = async () => {
+            if(!confirm("Are you sure you want to cancel your token?")) return;
+            await fetch('/api/fees/cancel', { method: 'POST', body: JSON.stringify({token_number: myToken.token_number})});
+            setMyToken(null);
+            setView('form');
+        };
+
+        return (
+            <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} exit={{opacity:0, y:-20}} className="flex flex-col gap-6">
+               {/* Controls Header */}
+               <div className="flex justify-between items-center bg-white/70 backdrop-blur-xl p-4 rounded-2xl shadow-glass border border-white">
+                  <div>
+                     <h2 className="text-2xl font-black text-slate-800">Fees Queue Clearer</h2>
+                     <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Real-time Token System</p>
+                  </div>
+                  <div className="flex bg-slate-200/50 p-1 rounded-xl">
+                     <button onClick={()=>setView('form')} className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${view!=='staff' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500 hover:text-slate-800'}`}>Student View</button>
+                     <button onClick={()=>setView('staff')} className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${view==='staff' ? 'bg-[#0f172a] text-white shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}>Staff Control</button>
+                  </div>
+               </div>
+
+               {/* VIEWS */}
+               {view === 'form' && (
+                  <div className="bg-white/85 backdrop-blur-2xl rounded-[32px] p-8 lg:p-12 shadow-glass border border-white max-w-3xl mx-auto w-full">
+                     <h3 className="text-3xl font-black text-slate-800 mb-2">Get Fee Token</h3>
+                     <p className="text-slate-500 font-bold mb-8">Fill the details to join the live fee processing queue.</p>
+                     
+                     <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                           <div>
+                              <label className="block text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Student Name</label>
+                              <input required value={formData.student_name} onChange={e=>setFormData({...formData, student_name: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-bold outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" />
+                           </div>
+                           <div>
+                              <label className="block text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Student ID / Reg No</label>
+                              <input required value={formData.student_id} onChange={e=>setFormData({...formData, student_id: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-bold outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" />
+                           </div>
+                           <div>
+                              <label className="block text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Department</label>
+                              <input required value={formData.department} onChange={e=>setFormData({...formData, department: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-bold outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" />
+                           </div>
+                           <div>
+                              <label className="block text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Year</label>
+                              <input required value={formData.year} onChange={e=>setFormData({...formData, year: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-bold outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" />
+                           </div>
+                           <div>
+                              <label className="block text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Fee Service Type</label>
+                              <select value={formData.service_type} onChange={e=>setFormData({...formData, service_type: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-bold outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 appearance-none">
+                                 <option>Tuition Fee</option><option>Exam Fee</option><option>Hostel Fee</option><option>Other</option>
+                              </select>
+                           </div>
+                           <div>
+                              <label className="block text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Preferred Service</label>
+                              <select value={formData.preferred_service} onChange={e=>setFormData({...formData, preferred_service: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 font-bold outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 appearance-none">
+                                 <option>Fee Payment</option><option>Fee Verification</option><option>Scholarship/Fee Query</option>
+                              </select>
+                           </div>
+                        </div>
+                        <button disabled={loading} type="submit" className="w-full mt-6 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-black uppercase tracking-widest py-4 rounded-xl shadow-lg hover:shadow-[0_10px_20px_rgba(79,70,229,0.3)] hover:-translate-y-1 transition-all outline-none">
+                           {loading ? 'Processing...' : 'APPLY FOR TOKEN'}
+                        </button>
+                     </form>
+                  </div>
+               )}
+
+               {view === 'full' && (
+                  <div className="bg-white/85 backdrop-blur-2xl rounded-[32px] p-12 shadow-glass border border-white max-w-xl mx-auto w-full text-center">
+                     <div className="w-24 h-24 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-6"><Icons.Help /></div>
+                     <h3 className="text-rose-500 font-mono text-sm uppercase tracking-[0.3em] font-black mb-4">âš  QUEUE CURRENTLY FULL</h3>
+                     <h2 className="text-4xl font-black text-slate-800 mb-4">All tokens are currently occupied.</h2>
+                     <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 my-8 grid grid-cols-2 gap-4 text-left">
+                        <div><p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Current Queue</p><p className="text-xl font-black text-slate-800">{queueData?.current_queue} / {queueData?.max_capacity}</p></div>
+                        <div><p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Currently Serving</p><p className="text-xl font-black text-indigo-600">{queueData?.serving || 'None'}</p></div>
+                        <div><p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">People Waiting</p><p className="text-xl font-black text-slate-800">{queueData?.people_waiting}</p></div>
+                        <div><p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Est. Next Availability</p><p className="text-xl font-black text-emerald-600">{queueData?.next_availability_time || 'Soon'}</p></div>
+                     </div>
+                     <button className="w-full bg-slate-800 text-white font-black uppercase tracking-widest py-4 rounded-xl shadow-lg hover:bg-slate-900 transition-all outline-none">NOTIFY ME WHEN AVAILABLE</button>
+                  </div>
+               )}
+
+               {view === 'confirmed' && myToken && (
+                  <div className="bg-white/85 backdrop-blur-2xl rounded-[32px] p-12 shadow-glass border border-white max-w-xl mx-auto w-full text-center">
+                     <motion.div initial={{scale:0}} animate={{scale:1}} className="w-24 h-24 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6"><Icons.CheckSquare /></motion.div>
+                     <h3 className="text-emerald-500 font-mono text-sm uppercase tracking-[0.3em] font-black mb-4">TOKEN CONFIRMED âœ“</h3>
+                     <div className="my-8">
+                        <span className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 drop-shadow-sm">#{myToken.token_number}</span>
+                     </div>
+                     <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 mb-8 text-left space-y-4">
+                        <div className="flex justify-between border-b border-slate-200 pb-4"><span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Student</span><span className="font-black text-slate-800">{myToken.student_name}</span></div>
+                        <div className="flex justify-between border-b border-slate-200 pb-4"><span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Service</span><span className="font-black text-slate-800">{myToken.service_type}</span></div>
+                        <div className="flex justify-between border-b border-slate-200 pb-4"><span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Queue Position</span><span className="font-black text-indigo-600">#{myToken.queue_position}</span></div>
+                        <div className="flex justify-between border-b border-slate-200 pb-4"><span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Estimated Wait</span><span className="font-black text-rose-500">{myToken.estimated_wait} mins</span></div>
+                        <div className="flex justify-between"><span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Status</span><span className="text-xs font-black text-emerald-600 bg-emerald-100 px-3 py-1 rounded-lg uppercase tracking-widest">{myToken.status}</span></div>
+                     </div>
+                     <div className="flex gap-4">
+                        <button onClick={()=>setView('live')} className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-black uppercase tracking-widest py-4 rounded-xl shadow-lg hover:-translate-y-1 transition-all">VIEW LIVE QUEUE</button>
+                        <button onClick={cancelToken} className="flex-1 bg-slate-100 text-slate-500 font-black uppercase tracking-widest py-4 rounded-xl hover:bg-rose-50 hover:text-rose-600 transition-all">CANCEL TOKEN</button>
+                     </div>
+                  </div>
+               )}
+
+               {view === 'live' && (
+                  <LiveQueueView myToken={myToken} setView={setView} />
+               )}
+
+               {view === 'staff' && (
+                  <StaffControlView />
+               )}
+            </motion.div>
+        );
+    };
+
+    const LiveQueueView = ({ myToken, setView }) => {
+        const [q, setQ] = useState(null);
+        useEffect(() => {
+            const fetchQ = async () => { const res = await fetch('/api/fees/queue'); setQ(await res.json()); };
+            fetchQ(); const int = setInterval(fetchQ, 3000); return () => clearInterval(int);
+        }, []);
+
+        const myPos = q?.waiting?.findIndex(t => t.token_number === myToken?.token_number);
+
+        return (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto w-full">
+               <div className="bg-white/85 backdrop-blur-2xl rounded-[32px] p-8 shadow-glass border border-white">
+                  <h3 className="text-xl font-black text-slate-800 mb-8">Live Queue Dashboard</h3>
+                  <div className="mb-8 p-6 bg-indigo-50 border border-indigo-100 rounded-2xl flex justify-between items-center">
+                     <div><p className="text-[10px] font-black uppercase tracking-widest text-indigo-500 mb-1">Now Serving</p><p className="text-4xl font-black text-indigo-700">{q?.serving?.token_number || 'None'}</p></div>
+                     <div className="text-right"><p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Your Token</p><p className="text-3xl font-black text-slate-800">{myToken?.token_number}</p></div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                     <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100"><p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">People Ahead</p><p className="text-2xl font-black text-slate-800">{myPos !== undefined && myPos >= 0 ? myPos : '-'}</p></div>
+                     <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100"><p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Estimated Wait</p><p className="text-2xl font-black text-rose-500">{myPos !== undefined && myPos >= 0 ? (myPos + 1) * 3 + ' mins' : '-'}</p></div>
+                  </div>
+                  <button onClick={()=>setView('confirmed')} className="w-full mt-8 bg-slate-100 text-slate-600 font-black uppercase tracking-widest py-4 rounded-xl hover:bg-slate-200 transition-all text-xs">Back to Token</button>
+               </div>
+
+               <div className="bg-[#0f172a]/90 backdrop-blur-2xl rounded-[32px] p-8 shadow-glass border border-white/10 overflow-y-auto max-h-[600px]">
+                  <h3 className="text-xl font-black text-white mb-8">Queue Sequence</h3>
+                  <div className="flex flex-col gap-4">
+                     {q?.serving && (
+                        <div className="p-4 bg-indigo-600 rounded-xl border border-indigo-500 shadow-lg relative">
+                           <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-emerald-400 rounded-full border-4 border-[#0f172a]"></div>
+                           <p className="text-[10px] font-black uppercase tracking-widest text-indigo-200 mb-1 ml-4">Serving</p>
+                           <p className="text-2xl font-black text-white ml-4">{q.serving.token_number}</p>
+                        </div>
+                     )}
+                     <div className="w-px h-8 bg-slate-700 ml-6"></div>
+                     {q?.waiting?.map((w, i) => (
+                        <div key={w.id} className={`p-4 rounded-xl border relative ${w.token_number === myToken?.token_number ? 'bg-emerald-500/20 border-emerald-500' : 'bg-white/5 border-white/10'}`}>
+                           <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Wait #{i+1}</p>
+                           <p className={`text-xl font-black ${w.token_number === myToken?.token_number ? 'text-emerald-400' : 'text-white'}`}>{w.token_number} {w.token_number === myToken?.token_number && ' (YOU)'}</p>
+                        </div>
+                     ))}
+                  </div>
+               </div>
+            </div>
+        )
+    };
+
+    const StaffControlView = () => {
+        const [q, setQ] = useState(null);
+        const fetchQ = async () => { const res = await fetch('/api/fees/queue'); setQ(await res.json()); };
+        useEffect(() => { fetchQ(); const int = setInterval(fetchQ, 3000); return () => clearInterval(int); }, []);
+
+        const handleNext = async () => { await fetch('/api/fees/next', {method:'POST'}); fetchQ(); };
+        const handleComplete = async () => { await fetch('/api/fees/complete', {method:'POST'}); fetchQ(); };
+        const handleCancel = async (token) => { if(confirm('Cancel '+token+'?')) { await fetch('/api/fees/cancel', {method:'POST', body:JSON.stringify({token_number: token})}); fetchQ(); } };
+
+        return (
+            <div className="bg-[#0f172a]/95 backdrop-blur-2xl rounded-[32px] p-8 lg:p-12 shadow-2xl border border-slate-700 max-w-4xl mx-auto w-full">
+               <div className="flex justify-between items-center mb-8 border-b border-slate-800 pb-8">
+                  <div>
+                     <h2 className="text-3xl font-black text-white">Staff Terminal</h2>
+                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2">Fees Queue Management</p>
+                  </div>
+                  <div className="bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2">
+                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Terminal Active
+                  </div>
+               </div>
+
+               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Currently Serving</p>
+                     {q?.serving ? (
+                        <div className="text-center py-8">
+                           <h1 className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 mb-4">{q.serving.token_number}</h1>
+                           <p className="text-slate-300 font-bold">{q.serving.student_name} â€¢ {q.serving.service_type}</p>
+                           <div className="flex gap-4 mt-8">
+                              <button onClick={handleComplete} className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-colors">Complete Token</button>
+                           </div>
+                        </div>
+                     ) : (
+                        <div className="text-center py-12 text-slate-500 font-bold">No token currently serving.</div>
+                     )}
+                     <button onClick={handleNext} className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest shadow-lg hover:shadow-blue-500/20 transition-all flex justify-center items-center gap-2">CALL NEXT TOKEN <Icons.ArrowRight /></button>
+                  </div>
+
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col">
+                     <div className="flex justify-between items-center mb-4">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Waiting Queue ({q?.waiting?.length || 0})</p>
+                     </div>
+                     <div className="flex-1 overflow-y-auto pr-2 space-y-3 max-h-[400px]">
+                        {q?.waiting?.map(w => (
+                           <div key={w.id} className="bg-slate-800/50 border border-slate-700 p-4 rounded-xl flex justify-between items-center group">
+                              <div>
+                                 <p className="text-lg font-black text-white">{w.token_number}</p>
+                                 <p className="text-[10px] font-bold text-slate-400 uppercase">{w.student_name} â€¢ {w.service_type}</p>
+                              </div>
+                              <button onClick={()=>handleCancel(w.token_number)} className="opacity-0 group-hover:opacity-100 bg-rose-500/20 text-rose-400 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-rose-500 hover:text-white transition-all">Cancel</button>
+                           </div>
+                        ))}
+                        {!q?.waiting?.length && <div className="text-center py-8 text-slate-600 font-bold">Queue is empty.</div>}
+                     </div>
+                  </div>
+               </div>
+            </div>
+        )
+    };
+
+    // --- STAFF AVAILABILITY MATRIX SYSTEM ---

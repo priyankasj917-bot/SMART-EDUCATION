@@ -1,0 +1,2554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusFlow OS - Premium Edition</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script>
+    window.onerror = function(msg, url, lineNo, columnNo, error) {
+        document.body.innerHTML = '<div style="background:red;color:white;padding:20px;font-family:monospace;z-index:9999;position:relative;"><h1>CRASH</h1><p>' + msg + '</p><p>Line: ' + lineNo + '</p><pre>' + (error ? error.stack : '') + '</pre></div>';
+        return false;
+    };
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            handwriting: ['"Caveat"', 'cursive'],
+          },
+          boxShadow: {
+            'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.05)',
+            'neumorphic': '8px 8px 16px #f1f5f9, -8px -8px 16px #ffffff',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { 
+       background-color: #f8fafc; 
+       background-image: url('./campus_bg.png');
+       background-size: cover;
+       background-position: center;
+       background-attachment: fixed;
+       overflow-x: hidden; 
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    
+    .glass-card {
+       background: rgba(255, 255, 255, 0.85);
+       backdrop-filter: blur(20px);
+       -webkit-backdrop-filter: blur(20px);
+       border: 1px solid rgba(255, 255, 255, 0.9);
+    }
+    .zoom-bg {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(30, 41, 59, 0.90));
+    }
+    .zoom-bg::before {
+      content: "";
+      position: absolute;
+      inset: -12%;
+      background-image: url('./campus_bg.png');
+      background-size: cover;
+      background-position: center;
+      transform: scale(1);
+      animation: campusZoom 18s ease-in-out infinite alternate;
+      opacity: 0.75;
+      filter: saturate(1.1) contrast(1.08);
+    }
+    .zoom-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(8, 15, 28, 0.82), rgba(15, 23, 42, 0.72));
+    }
+    @keyframes campusZoom {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1.12); }
+    }
+  </style>
+  <style id="premium-text-visibility">
+  <style id="saas-theme-update">
+    /* 1. Deep Navy Global Overlay (Option A - Preferred) */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(135deg, rgba(7, 11, 25, 0.95) 0%, rgba(15, 23, 42, 0.96) 100%);
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Set default inherited text to white so anything directly on the dark background is readable */
+    body {
+        color: #f8fafc !important;
+    }
+
+    /* 2. White / Very Light Content Cards against Dark Navy Background */
+    .bg-white, .glass-card {
+        background-color: #ffffff !important;
+        backdrop-filter: none !important;
+        border: 1px solid rgba(255, 255, 255, 0.8) !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3) !important;
+        transition: box-shadow 0.3s ease !important;
+    }
+    .bg-white:hover {
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4) !important;
+    }
+    
+    .bg-slate-50 {
+        background-color: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+    }
+    .bg-slate-100 {
+        background-color: #f1f5f9 !important;
+        border: 1px solid #e2e8f0 !important;
+    }
+
+    /* Header Exception - pure white but no hover */
+    .bg-white\/70 {
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(12px) !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+    }
+    .bg-white\/70:hover { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important; }
+
+    /* 3. Text Contrast - Very Important */
+    /* Make text directly on the background (Main Headings) bright white */
+    body .text-slate-800, body .text-slate-900, h1, h2, h3 {
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5) !important;
+    }
+    body .text-slate-700, h4 { color: #000407 !important; font-weight: 600 !important; }
+    body .text-slate-600 { color: #f1f5f9 !important; }
+    body .text-slate-500 { color: #040404 !important; }
+
+    /* But restore Deep Navy / Dark Slate text INSIDE the white cards for high readability! */
+    .bg-white .text-slate-800, .bg-slate-50 .text-slate-800, .bg-slate-100 .text-slate-800, .bg-white\/70 .text-slate-800,
+    .bg-white h1, .bg-white h2, .bg-white h3, .bg-slate-50 h1, .bg-white\/70 h2 {
+        color: #0f172a !important;
+        text-shadow: none !important;
+    }
+    .bg-white .text-slate-700, .bg-slate-50 .text-slate-700, .bg-white\/70 .text-slate-700 {
+        color: #334155 !important;
+        text-shadow: none !important;
+    }
+    .bg-white .text-slate-600, .bg-slate-50 .text-slate-600, .bg-white\/70 .text-slate-600 {
+        color: #475569 !important;
+        text-shadow: none !important;
+    }
+    .bg-white .text-slate-500, .bg-slate-50 .text-slate-500, .bg-white\/70 .text-slate-500 {
+        color: #64748b !important;
+        text-shadow: none !important;
+    }
+    .bg-white .text-slate-400, .bg-slate-50 .text-slate-400, .bg-white\/70 .text-slate-400 {
+        color: #000103 !important;
+        text-shadow: none !important;
+    }
+
+    /* 4. Sidebar Modernization */
+    /* Deep Navy Background */
+    .bg-\\[\\#0f172a\\]\\/80 {
+        background-color: #050914 !important;
+        border-right: 1px solid rgba(255,255,255,0.05) !important;
+        backdrop-filter: none !important;
+    }
+    /* Sidebar Selected Menu */
+    aside button.bg-blue-600 {
+        background-color: #2563eb !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4) !important;
+        border: none !important;
+    }
+    aside button.bg-blue-600 .text-slate-500 {
+        color: #bfdbfe !important;
+    }
+    /* Sidebar Unselected */
+    aside button.text-slate-400 {
+        color: #94a3b8 !important;
+    }
+    aside button.text-slate-400:hover {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        color: #ffffff !important;
+    }
+    
+    /* 5. Solid, High-Contrast Status Badges and Buttons */
+    /* Remove pastel look by converting light background utility classes to solid accents */
+    span[class*="bg-"][class*="100"], span[class*="bg-"][class*="50"] {
+        color: #130303 !important;
+        font-weight: 700 !important;
+        border: none !important;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2) !important;
+    }
+    .bg-emerald-100, .bg-emerald-50, .bg-green-100 { background-color: #059669 !important; }
+    .bg-rose-100, .bg-rose-50, .bg-red-100 { background-color: #e11d48 !important; }
+    .bg-amber-100, .bg-amber-50, .bg-yellow-100 { background-color: #d97706 !important; }
+    .bg-blue-100, .bg-blue-50 { background-color: #2563eb !important; }
+    .bg-purple-100, .bg-purple-50 { background-color: #7c3aed !important; }
+    .bg-orange-100, .bg-orange-50 { background-color: #ea580c !important; }
+    .bg-indigo-100, .bg-indigo-50 { background-color: #4f46e5 !important; }
+
+    /* Button specific overrides */
+    button[class*="bg-"][class*="100"], button[class*="bg-"][class*="50"] {
+        color: #d8d6d5 !important;
+        font-weight: 700 !important;
+        border: none !important;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15) !important;
+    }
+    button[class*="bg-rose"] { background-color: #e11d48 !important; }
+    button[class*="bg-emerald"] { background-color: #059669 !important; }
+
+    /* Ensure white buttons in dark areas remain white */
+    button.bg-white {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1) !important;
+    }
+
+    /* 6. Form Elements */
+    input, select, textarea {
+        background-color: #f8fafc !important;
+        color: #0f172a !important;
+        border: 1px solid #cbd5e1 !important;
+        font-weight: 600 !important;
+    }
+    input:focus, select:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+    }
+    input::placeholder { color: #94a3b8 !important; font-weight: 500 !important; }
+    
+    /* 7. Typography Adjustments */
+    .text-[10px], .text-xs { font-weight: 700 !important; letter-spacing: 0.05em !important; }
+
+    .dashboard-greeting h1, .dashboard-greeting h2 {
+        color: #000000 !important;
+        text-shadow: none !important;
+    }
+    
+  </style>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    const { motion, AnimatePresence } = window.Motion;
+
+    // --- MOCK BACKEND (IndexedDB + Fetch Interceptor) ---
+    // Simulates the Python Flask + SQLite Backend entirely in the browser
+    const initMockBackend = () => {
+        const DB_NAME = 'CampusFlowDB';
+        const STORE_NAME = 'fee_queue';
+        const MAX_CAPACITY = 50;
+        const AVG_WAIT_TIME = 3;
+
+        const openDB = () => new Promise((resolve, reject) => {
+            const req = indexedDB.open(DB_NAME, 1);
+            req.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains(STORE_NAME)) {
+                    db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                }
+            };
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => reject(req.error);
+        });
+
+        const runTx = async (mode, callback) => {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, mode);
+                const store = tx.objectStore(STORE_NAME);
+                const req = callback(store);
+                if (req) {
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = () => reject(req.error);
+                } else {
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = () => reject(tx.error);
+                }
+            });
+        };
+
+        const getAll = () => runTx('readonly', store => store.getAll());
+        
+        const originalFetch = window.fetch;
+        window.fetch = async (input, init) => {
+            const url = typeof input === 'string' ? input : input.url;
+            if (!url.startsWith('/api/fees')) return originalFetch(input, init);
+
+            const method = init?.method || 'GET';
+            const body = init?.body ? JSON.parse(init.body) : null;
+            await new Promise(res => setTimeout(res, 400)); // Network delay simulation
+
+            const respond = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });
+
+            try {
+                const allTokens = await getAll();
+                const waiting = allTokens.filter(t => t.status === 'WAITING').sort((a,b)=>a.id-b.id);
+                const serving = allTokens.filter(t => t.status === 'SERVING').sort((a,b)=>a.id-b.id);
+                const current_queue = waiting.length + serving.length;
+
+                if (url === '/api/fees/availability' && method === 'GET') {
+                    let next_avail = null;
+                    if (current_queue >= MAX_CAPACITY) {
+                        const d = new Date(Date.now() + AVG_WAIT_TIME * 60000);
+                        next_avail = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    }
+                    return respond({
+                        max_capacity: MAX_CAPACITY,
+                        current_queue,
+                        available: MAX_CAPACITY - current_queue,
+                        serving: serving.length > 0 ? serving[0].token_number : null,
+                        next_availability_time: next_avail,
+                        people_waiting: waiting.length
+                    });
+                }
+
+                if (url === '/api/fees/apply' && method === 'POST') {
+                    if (current_queue >= MAX_CAPACITY) return respond({ error: "QUEUE FULL", message: "All tokens are currently occupied." }, 400);
+                    const lastNum = allTokens.length > 0 ? Math.max(...allTokens.map(t => parseInt(t.token_number.split('-')[1]))) : 0;
+                    const token_str = `FQ-${String(lastNum + 1).padStart(3, '0')}`;
+                    
+                    const newToken = { token_number: token_str, ...body, request_time: new Date().toISOString(), status: 'WAITING' };
+                    await runTx('readwrite', store => store.add(newToken));
+                    
+                    const queue_position = waiting.length + 1;
+                    return respond({ ...newToken, queue_position, estimated_wait: queue_position * AVG_WAIT_TIME });
+                }
+
+                if (url === '/api/fees/queue' && method === 'GET') {
+                    return respond({ serving: serving.length > 0 ? serving[0] : null, waiting: waiting });
+                }
+
+                if (url.startsWith('/api/fees/status/') && method === 'GET') {
+                    const tokenNum = url.split('/').pop();
+                    const token = allTokens.find(t => t.token_number === tokenNum);
+                    if (!token) return respond({ error: 'Not found' }, 404);
+                    let q_pos = 0, e_wait = 0;
+                    if (token.status === 'WAITING') {
+                        q_pos = waiting.findIndex(t => t.id === token.id) + 1;
+                        e_wait = q_pos * AVG_WAIT_TIME;
+                    }
+                    return respond({ ...token, queue_position: q_pos, estimated_wait: e_wait });
+                }
+
+                if (url === '/api/fees/next' && method === 'POST') {
+                    await runTx('readwrite', store => {
+                        if (serving.length > 0) store.put({ ...serving[0], status: 'COMPLETED' });
+                        if (waiting.length > 0) store.put({ ...waiting[0], status: 'SERVING' });
+                    });
+                    return respond({ success: true });
+                }
+
+                if (url === '/api/fees/complete' && method === 'POST') {
+                    await runTx('readwrite', store => {
+                        if (serving.length > 0) store.put({ ...serving[0], status: 'COMPLETED' });
+                    });
+                    return respond({ success: true });
+                }
+
+                if (url === '/api/fees/cancel' && method === 'POST') {
+                    const token = allTokens.find(t => t.token_number === body.token_number);
+                    if (token) await runTx('readwrite', store => store.put({ ...token, status: 'CANCELLED' }));
+                    return respond({ success: true });
+                }
+
+                return respond({ error: 'Not found' }, 404);
+            } catch (err) {
+                console.error(err);
+                return respond({ error: 'Internal Server Error' }, 500);
+            }
+        };
+    };
+    initMockBackend();
+
+    // --- GLOBAL SETUP (Simulating Backend Data) ---
+    const initGlobalData = () => {
+        // 1. Initialize Staff (90 members across 9 departments)
+        if (!localStorage.getItem('cf_staff')) {
+            const depts = ['CSE', 'IT', 'ECE', 'EEE', 'MECH', 'CIVIL', 'VLSI', 'MBA', 'MCA'];
+            const firstNames = ["Arun", "Priya", "Rahul", "Anitha", "Suresh", "Kavitha", "Vijay", "Deepa", "Karthik", "Sneha", "Manoj", "Divya", "Sanjay", "Meera", "Ravi"];
+            const lastNames = ["Kumar", "Sharma", "Singh", "Raj", "Menon", "Nair", "Iyer", "Rao", "Das", "Patil", "Reddy", "Pillai", "Verma", "Jain", "Bose"];
+            
+            const staffList = [];
+            let idCounter = 1;
+
+            depts.forEach(dept => {
+                const usedNames = new Set();
+                while(usedNames.size < 10) {
+                    const fName = firstNames[Math.floor(Math.random() * firstNames.length)];
+                    const lName = lastNames[Math.floor(Math.random() * lastNames.length)];
+                    const fullName = `Dr. ${fName} ${lName}`;
+                    if(!usedNames.has(fullName)) {
+                        usedNames.add(fullName);
+                        const isFaculty001 = (dept === 'IT' && usedNames.size === 1); // Ensure faculty001 has an entry
+                        const staffId = isFaculty001 ? 'faculty001' : `${dept}${String(idCounter).padStart(3, '0')}`;
+                        const name = isFaculty001 ? 'Dr. Anitha Kumar' : fullName;
+                        
+                        staffList.push({
+                            id: staffId,
+                            name: name,
+                            department: dept,
+                            designation: 'Assistant Professor',
+                            room: `Room ${dept}-${100 + usedNames.size}`,
+                            status: 'AVAILABLE' // AVAILABLE, BUSY, EXAM-HALL DUTY, LEAVE, HALF-DAY PERMISSION
+                        });
+                        idCounter++;
+                    }
+                }
+            });
+            localStorage.setItem('cf_staff', JSON.stringify(staffList));
+        }
+
+        // 2. Initialize Fee Slots
+        if (!localStorage.getItem('cf_fee_slots')) {
+            const slots = [];
+            let hour = 10;
+            let min = 0;
+            for(let i=0; i<12; i++) {
+                const startStr = `${hour > 12 ? hour - 12 : hour}:${min === 0 ? '00' : min} ${hour >= 12 ? 'PM' : 'AM'}`;
+                min += 15;
+                if(min >= 60) { hour += 1; min = 0; }
+                const endStr = `${hour > 12 ? hour - 12 : hour}:${min === 0 ? '00' : min} ${hour >= 12 ? 'PM' : 'AM'}`;
+                
+                slots.push({
+                    id: `slot-${i}`,
+                    date: '08 October 2026',
+                    time: `${startStr} – ${endStr}`,
+                    status: 'AVAILABLE', // AVAILABLE, BOOKED, ACCEPTED, COMPLETED
+                    studentId: null,
+                    studentName: null,
+                    department: null,
+                    token: null
+                });
+            }
+            localStorage.setItem('cf_fee_slots', JSON.stringify(slots));
+        }
+
+        // 3. Initialize Activity Log
+        if (!localStorage.getItem('cf_activity')) {
+            localStorage.setItem('cf_activity', JSON.stringify([
+                { id: 1, text: "System initialized successfully.", time: new Date().toISOString() }
+            ]));
+        }
+    };
+    initGlobalData();
+
+    // --- ICONS ---
+    const Icons = {
+      Home: () => <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>,
+      Clock: () => <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
+      Users: () => <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>,
+      CheckSquare: () => <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
+      Bell: () => <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-black"><path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>,
+      Search: () => <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>,
+      ArrowRight: () => <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>,
+      ChevronDown: () => <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/></svg>,
+      Settings: () => <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>,
+      Help: () => <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
+      Document: () => <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>,
+      Lightning: () => <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>,
+      Book: () => <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>,
+      Sparkles: () => <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>,
+      AlertTriangle: () => <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>,
+      CheckCircle: () => <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
+    };
+
+    // --- MAIN LAYOUT ---
+    const DashboardLayout = ({ auth, onLogout }) => {
+       const [activeNav, setActiveNav] = useState(auth?.role === 'admin' ? 'admin_dash' : 'home');
+       const [queueData, setQueueData] = useState(null);
+
+       useEffect(() => {
+           const fetchQ = async () => {
+               try {
+                   const res = await fetch('/api/fees/availability');
+                   if (res.ok) setQueueData(await res.json());
+               } catch(e) {}
+           };
+           fetchQ();
+           const int = setInterval(fetchQ, 3000);
+           return () => clearInterval(int);
+       }, []);
+
+       return (
+          <div className="flex h-screen w-full font-sans overflow-hidden bg-slate-900/10 backdrop-blur-[2px]">
+             <Sidebar activeNav={activeNav} setActiveNav={setActiveNav} auth={auth} onLogout={onLogout} />
+             
+             <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
+                <TopHeader auth={auth} onLogout={onLogout} onNavigate={setActiveNav} />
+                <main className="flex-1 overflow-y-auto p-6 lg:p-10 z-10 scroll-smooth">
+                   <div className="max-w-[1600px] mx-auto pb-20">
+                      <AnimatePresence mode="wait">
+                         {activeNav === 'home' && <DashboardHome key="home" queueData={queueData} onNavigate={setActiveNav} auth={auth} />}
+                         {activeNav === 'fees' && <FeesQueueSystem key="fees" queueData={queueData} auth={auth} />}
+                         {activeNav === 'staff' && <StaffMatrixSystem key="staff" auth={auth} />}
+                         {activeNav === 'smartod' && <SmartODSystem key="smartod" auth={auth} />}
+                         {activeNav === 'admin_dash' && <AdminDashboardSystem key="admin_dash" auth={auth} />}
+                      </AnimatePresence>
+                   </div>
+                </main>
+             </div>
+          </div>
+       );
+    };
+
+    const Sidebar = ({ activeNav, setActiveNav, auth, onLogout }) => {
+       let navItems = [];
+       if (auth?.role === 'admin') {
+           navItems = [
+               { id: 'admin_dash', label: 'Admin Overview', icon: <Icons.Home /> },
+               { id: 'staff', label: 'Staff Availability', icon: <Icons.Users /> },
+           ];
+       } else if (auth?.role === 'faculty') {
+           navItems = [
+               { id: 'home', label: 'Faculty Dashboard', icon: <Icons.Home /> },
+               { id: 'fees', label: 'Student Affairs (Fees)', icon: <Icons.Clock /> },
+               { id: 'staff', label: 'My Availability', icon: <Icons.Users /> },
+               { id: 'smartod', label: 'Smart OD Verification', icon: <Icons.CheckSquare /> },
+           ];
+       } else {
+           navItems = [
+               { id: 'home', label: 'Student Dashboard', icon: <Icons.Home /> },
+               { id: 'fees', label: 'Fee Queue', icon: <Icons.Clock /> },
+               { id: 'staff', label: 'Staff Availability', icon: <Icons.Users /> },
+               { id: 'smartod', label: 'SmartOD Protocol', icon: <Icons.CheckSquare /> },
+           ];
+       }
+
+       const quickLinks = [
+          { id: 'notif', label: 'Notifications', icon: <Icons.Bell /> },
+          { id: 'activity', label: 'My Activity', icon: <Icons.Document /> },
+       ];
+
+       const handleLogoutClick = () => {
+           if(window.confirm("Are you sure you want to logout?")) {
+               onLogout();
+           }
+       };
+
+       return (
+          <motion.aside initial={{ x: -300 }} animate={{ x: 0 }} className="w-[280px] h-full bg-[#0f172a]/80 backdrop-blur-xl text-white flex flex-col shadow-[20px_0_40px_rgba(0,0,0,0.15)] z-50 relative flex-shrink-0 border-r border-white/10">
+             <div className="p-8 pb-6 relative overflow-hidden">
+                <div className="absolute top-[-50px] left-[-50px] w-32 h-32 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                <h1 className="text-3xl font-black tracking-tight text-white flex items-center gap-2 relative z-10">CampusFlow<div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse mt-2" /></h1>
+                <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.2em] mt-3 relative z-10">Smart Campus.<br/>Seamless Operations.</p>
+             </div>
+             <div className="flex-1 px-4 py-6 flex flex-col gap-2 overflow-y-auto">
+                <p className="px-4 text-[10px] font-bold text-white uppercase tracking-widest mb-2">Main Menu</p>
+                {navItems.map(item => (
+                   <button key={item.id} onClick={() => setActiveNav(item.id)} className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 font-bold text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${activeNav === item.id ? 'bg-blue-600 text-white shadow-[0_8px_20px_rgba(37,99,235,0.3)] translate-x-1' : 'text-slate-400 hover:bg-slate-800/50 hover:text-white hover:translate-x-1'}`}>
+                      <div className={`${activeNav === item.id ? 'text-white' : 'text-slate-500'}`}>{item.icon}</div>{item.label}
+                   </button>
+                ))}
+                <div className="w-full h-px bg-slate-700/50 my-6"></div>
+                <p className="px-4 text-[10px] font-bold text-white uppercase tracking-widest mb-2">Quick Links</p>
+                {quickLinks.map(item => (
+                   <button key={item.id} className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 font-bold text-sm text-slate-400 hover:bg-slate-800/50 hover:text-white hover:translate-x-1 outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+                      <div className="text-black">{item.icon}</div>{item.label}
+                   </button>
+                ))}
+             </div>
+             <div className="p-6 mt-auto">
+                 <button onClick={handleLogoutClick} className="w-full flex justify-center items-center gap-2 bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white px-4 py-3 rounded-2xl font-bold text-sm transition-all shadow-sm">
+                     LOGOUT
+                 </button>
+             </div>
+          </motion.aside>
+       )
+    };
+
+    const TopHeader = ({ auth, onLogout, onNavigate }) => {
+        const [showNotifs, setShowNotifs] = useState(false);
+        const [notifs, setNotifs] = useState([]);
+        const [filter, setFilter] = useState('all');
+
+        const fetchNotifs = () => {
+            const allNotifs = JSON.parse(localStorage.getItem('cf_notifications') || '[]');
+            const myNotifs = allNotifs.filter(n => n.targetRole === auth?.role || n.targetUsername === auth?.username);
+            setNotifs(myNotifs);
+        };
+
+        useEffect(() => {
+            fetchNotifs();
+            window.addEventListener('cf_notify', fetchNotifs);
+            return () => window.removeEventListener('cf_notify', fetchNotifs);
+        }, [auth]);
+
+        const unreadCount = notifs.filter(n => !n.read).length;
+
+        const markAllAsRead = () => {
+            const allNotifs = JSON.parse(localStorage.getItem('cf_notifications') || '[]');
+            const updated = allNotifs.map(n => (n.targetRole === auth?.role || n.targetUsername === auth?.username) ? { ...n, read: true } : n);
+            localStorage.setItem('cf_notifications', JSON.stringify(updated));
+            fetchNotifs();
+        };
+
+        const markAsRead = (id, targetCategory) => {
+            const allNotifs = JSON.parse(localStorage.getItem('cf_notifications') || '[]');
+            const updated = allNotifs.map(n => n.id === id ? { ...n, read: true } : n);
+            localStorage.setItem('cf_notifications', JSON.stringify(updated));
+            fetchNotifs();
+            if(onNavigate && targetCategory) {
+                if(targetCategory === 'fees') onNavigate('fees');
+                if(targetCategory === 'od') onNavigate('smartod');
+                if(targetCategory === 'staff') onNavigate('staff');
+                setShowNotifs(false);
+            }
+        };
+
+        const filteredNotifs = notifs.filter(n => {
+            if (filter === 'unread') return !n.read;
+            if (filter === 'all') return true;
+            return n.category === filter;
+        });
+
+        const getNotifIcon = (category, message) => {
+            const msg = message.toLowerCase();
+            if (msg.includes('rejected')) return <div className="text-rose-500 bg-rose-50 p-1.5 rounded-full"><Icons.AlertTriangle /></div>;
+            if (msg.includes('approved') || msg.includes('accepted') || msg.includes('successfully')) return <div className="text-emerald-500 bg-emerald-50 p-1.5 rounded-full"><Icons.CheckCircle /></div>;
+            if (category === 'fees') return <div className="text-blue-500 bg-blue-50 p-1.5 rounded-full"><Icons.Clock /></div>;
+            if (category === 'od') return <div className="text-purple-500 bg-purple-50 p-1.5 rounded-full"><Icons.Document /></div>;
+            return <div className="text-slate-500 bg-slate-100 p-1.5 rounded-full"><Icons.Bell /></div>;
+        };
+
+        const formatTime = (isoString) => {
+            const d = new Date(isoString);
+            const now = new Date();
+            const diffMs = now - d;
+            const diffMins = Math.floor(diffMs / 60000);
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffMins < 1440) return `${Math.floor(diffMins/60)}h ago`;
+            return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+        };
+
+        return (
+           <header className="h-24 px-6 lg:px-10 flex items-center justify-between bg-white/70 backdrop-blur-xl border-b border-slate-200/50 z-40 sticky top-0 shadow-sm">
+              <div className="flex-1 max-w-xl relative group">
+                 <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors"><Icons.Search /></div>
+                 <input type="text" placeholder="Search students, staff, rooms, or requests..." className="w-full bg-slate-100/80 hover:bg-slate-100 border border-transparent focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 rounded-full py-3.5 pl-14 pr-20 text-sm font-semibold text-slate-700 placeholder:text-slate-400 transition-all outline-none" />
+              </div>
+              <div className="flex items-center gap-4 sm:gap-6 pl-4 relative">
+                 <div className="relative">
+                     <button onClick={() => setShowNotifs(!showNotifs)} className={`w-10 h-10 rounded-full flex items-center justify-center transition-all outline-none relative ${showNotifs ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-100'}`}>
+                        <Icons.Bell />
+                        {unreadCount > 0 && <span className="absolute top-2 right-2.5 flex h-2.5 w-2.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500 shadow-[0_0_0_2px_white]"></span></span>}
+                     </button>
+                     
+                     <AnimatePresence>
+                         {showNotifs && (
+                             <motion.div initial={{opacity:0, y:10, scale:0.95}} animate={{opacity:1, y:0, scale:1}} exit={{opacity:0, y:10, scale:0.95}} transition={{duration:0.15}} className="absolute right-0 mt-4 w-80 md:w-96 bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-slate-200 overflow-hidden z-50 flex flex-col">
+                                 {/* Header */}
+                                 <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-white">
+                                     <h3 className="text-sm font-black text-slate-800 flex items-center gap-2">Notifications {unreadCount > 0 && <span className="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded-full">{unreadCount}</span>}</h3>
+                                     {unreadCount > 0 && <button onClick={markAllAsRead} className="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors">Mark all read</button>}
+                                 </div>
+                                 
+                                 {/* Filters */}
+                                 <div className="px-3 pt-3 flex gap-1 overflow-x-auto bg-slate-50 border-b border-slate-100 no-scrollbar">
+                                     {['all', 'unread', 'fees', 'od', 'staff'].map(f => (
+                                         <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 text-xs font-bold capitalize rounded-t-lg transition-all ${filter === f ? 'bg-white text-blue-600 border border-slate-200 border-b-white shadow-[0_-2px_4px_rgba(0,0,0,0.02)] translate-y-[1px]' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'}`}>
+                                            {f}
+                                         </button>
+                                     ))}
+                                 </div>
+
+                                 {/* List */}
+                                 <div className="max-h-[360px] overflow-y-auto bg-white">
+                                     {filteredNotifs.length === 0 ? (
+                                         <div className="px-6 py-12 flex flex-col items-center justify-center text-center">
+                                             <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-3"><Icons.Bell /></div>
+                                             <p className="text-sm text-slate-800 font-bold mb-1">No notifications here</p>
+                                             <p className="text-xs text-slate-500">You're all caught up!</p>
+                                         </div>
+                                     ) : filteredNotifs.map(n => (
+                                         <div key={n.id} onClick={() => markAsRead(n.id, n.category)} className={`group px-5 py-4 border-b border-slate-50 hover:bg-blue-50/50 transition-colors cursor-pointer flex gap-3 relative ${!n.read ? 'bg-blue-50/20' : ''}`}>
+                                             {!n.read && <div className="absolute left-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-blue-500"></div>}
+                                             <div className="mt-0.5 shrink-0">{getNotifIcon(n.category, n.message)}</div>
+                                             <div className="flex-1 min-w-0">
+                                                 <p className={`text-sm leading-snug mb-1 ${!n.read ? 'font-bold text-slate-800' : 'font-medium text-slate-600'}`}>{n.message}</p>
+                                                 {n.details && <p className="text-xs font-medium text-slate-500 truncate mb-1.5">{n.details}</p>}
+                                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{formatTime(n.time)}</p>
+                                             </div>
+                                         </div>
+                                     ))}
+                                 </div>
+                                 
+                                 {/* Footer */}
+                                 <div className="p-3 bg-slate-50 border-t border-slate-100 text-center">
+                                     <button className="text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors w-full py-1">View All Notifications</button>
+                                 </div>
+                             </motion.div>
+                         )}
+                     </AnimatePresence>
+                 </div>
+                 <div className="w-px h-8 bg-slate-200 hidden sm:block"></div>
+                 <button onClick={() => {if(window.confirm("Are you sure you want to logout?")) onLogout();}} className="flex items-center gap-3 hover:bg-slate-100/50 p-1.5 pr-4 rounded-full transition-all outline-none">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-400 to-blue-500 flex items-center justify-center text-white font-black shadow-md border-2 border-white">{auth?.name?.substring(0,2).toUpperCase() || 'U'}</div>
+                    <div className="hidden md:flex flex-col items-start"><span className="text-sm font-bold text-slate-800">{auth?.name || 'User'}</span><span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{auth?.role?.toUpperCase()} • {auth?.username?.toUpperCase() || 'ID'}</span></div>
+                    <Icons.ChevronDown className="text-slate-400 hidden md:block" />
+                 </button>
+              </div>
+           </header>
+        );
+    };
+
+    // --- HOME DASHBOARD ---
+    const DashboardHome = ({ queueData, onNavigate, auth }) => {
+       const stagger = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.1 } } };
+       const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } } };
+         const [showChat, setShowChat] = useState(false);
+         const [chatInput, setChatInput] = useState('');
+         const [chatMessages, setChatMessages] = useState([
+             { sender: 'bot', text: 'Hi! I can help with fees, staff, and OD requests. Ask me anything.' },
+         ]);
+
+         const sendChatMessage = () => {
+             const trimmed = chatInput.trim();
+             if (!trimmed) return;
+
+             const lower = trimmed.toLowerCase();
+             let reply = 'I can help with campus queries like fees, staff availability, or OD applications.';
+
+             if (lower.includes('fee') || lower.includes('payment') || lower.includes('queue')) {
+                 reply = 'You can check fee status under the Student Affairs section and view the current token queue.';
+             } else if (lower.includes('staff') || lower.includes('availability') || lower.includes('room')) {
+                 reply = 'Open the Staff Matrix to see availability, room status, and staff assignments.';
+             } else if (lower.includes('od') || lower.includes('on-duty') || lower.includes('permission')) {
+                 reply = 'Use the SmartOD Protocol page to submit, track, or review your OD request.';
+             } else if (lower.includes('hello') || lower.includes('hi')) {
+                 reply = 'Hello! How can I help with your campus work today?';
+             }
+
+             setChatMessages(prev => [...prev, { sender: 'user', text: trimmed }, { sender: 'bot', text: reply }]);
+             setChatInput('');
+         };
+
+       return (
+          <>
+             <motion.div variants={stagger} initial="hidden" animate="show" className="flex flex-col gap-8">
+                <motion.div variants={item} className="w-full relative glass-card rounded-[32px] p-8 lg:p-12 shadow-glass overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 group">
+                   <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-blue-100/50 via-cyan-50/50 to-transparent rounded-full blur-3xl pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
+                   <div className="relative z-10 max-w-2xl dashboard-greeting">
+                      <h2 style={auth?.role === 'faculty' ? { color: '#111827', textShadow: 'none' } : {}} className={`text-sm font-black uppercase tracking-[0.2em] mb-4 flex items-center gap-2 ${auth?.role === 'faculty' ? '' : 'text-blue-500'}`}><Icons.Sparkles /> Smarter Campus • Happier You</h2>
+                      <h1 style={auth?.role === 'faculty' ? { color: '#111827', textShadow: 'none' } : {}} className={`text-5xl lg:text-6xl font-black tracking-tight mb-6 ${auth?.role === 'faculty' ? '' : 'text-slate-800'}`}>Hello, {auth?.name?.split(' ')[0] || 'User'}! <span className="inline-block animate-[bounce_2s_infinite]">✨</span></h1>
+                      <p style={auth?.role === 'faculty' ? { color: '#111827', textShadow: 'none' } : {}} className={`text-lg font-medium leading-relaxed mb-8 max-w-xl ${auth?.role === 'faculty' ? '' : 'text-slate-500'}`}>CampusFlow OS helps you manage fees, staff and room allocations, and handle OD requests — all in one seamlessly integrated place.</p>
+                   </div>
+                   <div className="relative z-10 hidden md:block">
+                      <p className="absolute -bottom-6 -right-6 font-handwriting text-2xl text-slate-500 rotate-[-4deg] whitespace-nowrap opacity-80">Small steps create big change <span className="text-rose-400">♥</span></p>
+                   </div>
+                </motion.div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+                   <ModuleCard variants={item} onClick={()=>onNavigate('fees')} title="Fees Queue Clearer" desc="Get your token and estimated wait time" icon={<Icons.Clock />} gradient="from-[#FFECE5] to-[#FFF0EB]" btnGradient="from-orange-400 to-rose-400" dynamicValue={queueData ? (queueData.available === 0 ? 'FULL' : 'OPEN') : '...'} stats={queueData ? [{label: 'Current Token', value: queueData.serving || 'None'}, {label: 'Wait Time', value: (queueData.people_waiting * 3) + ' mins'}] : null} />
+                   <ModuleCard variants={item} onClick={()=>onNavigate('staff')} title="Staff Matrix" desc="Check availability and assign rooms/staff" icon={<Icons.Users />} gradient="from-[#EEF2FF] to-[#F5F3FF]" btnGradient="from-indigo-400 to-blue-500" />
+                   <ModuleCard variants={item} onClick={()=>onNavigate('smartod')} title="SmartOD Protocol" desc="Apply, track and get updates on your OD" icon={<Icons.Document />} gradient="from-[#ECFDF5] to-[#F0FDF4]" btnGradient="from-emerald-400 to-teal-500" />
+                </div>
+                
+                {/* Simplified Bottom Area for Home */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 items-stretch">
+                                     <motion.div variants={item} className="xl:col-span-2 h-full bg-[#0f172a]/90 backdrop-blur-xl rounded-[32px] p-8 shadow-xl border border-slate-800 relative overflow-hidden group">
+                      <h2 className="text-3xl font-black text-white tracking-tight mb-2">Campus Overview</h2>
+                        <p className="text-sm font-bold text-slate-400 leading-relaxed mb-6">A quick glance at the campus statistics and information.</p>
+                      <div className="grid grid-cols-2 lg:grid-cols-2 gap-2 mb-8">
+                         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:bg-white/10 transition-colors">
+                            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Total Students</span>
+                            <span className="text-3xl font-black text-white">4000+</span>
+                         </div>
+                         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:bg-white/10 transition-colors">
+                            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">About the College</span>
+                            <span className="text-sm font-normal text-slate-300 leading-relaxed">M. Kumarasamy College of Engineering is located in Thalavapalayam on the way to Karur and Salem. The college was founded by M. Kumarasamy, the correspondent and also the management trustee of M. Kumarasamy Health & Education Trust in the year of 2001. </span>
+                         </div>
+                      </div>
+                   </motion.div>
+                   
+                   <motion.div variants={item} className="self-start h-fit bg-white/90 backdrop-blur-xl rounded-[32px] p-8 shadow-glass border border-white text-center relative overflow-hidden">
+                      <div>
+                         <h3 className="text-xl font-black text-slate-800 mt-4">AI Assistant</h3>
+                         <p className="text-sm font-bold text-slate-500 leading-relaxed mb-2">A better campus experience is just a click away.</p>
+                      </div>
+                             <button onClick={() => setShowChat(true)} className="w-full bg-indigo-500 text-white py-3.5 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-indigo-600 hover:shadow-lg transition-all outline-none">Ask Me Anything</button>
+                   </motion.div>
+                </div>
+             </motion.div>
+
+                 <AnimatePresence>
+                     {showChat && (
+                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                             <motion.div initial={{ scale: 0.96, opacity: 0, y: 10 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.96, opacity: 0, y: 10 }} className="w-full max-w-lg bg-white rounded-[28px] shadow-2xl border border-slate-100 overflow-hidden">
+                                 <div className="flex items-center justify-between bg-slate-900 text-white px-5 py-4">
+                                     <div>
+                                         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">AI Assistant</p>
+                                         <h3 className="text-lg font-black">Campus Chatbot</h3>
+                                     </div>
+                                     <button onClick={() => setShowChat(false)} className="text-slate-300 hover:text-white text-xl font-black">×</button>
+                                 </div>
+                                 <div className="h-[360px] overflow-y-auto bg-slate-50 p-4 space-y-3">
+                                     {chatMessages.map((message, index) => (
+                                         <div key={index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                             <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm font-medium ${message.sender === 'user' ? 'bg-indigo-500 text-white' : 'bg-white text-slate-700 border border-slate-200'}`}>
+                                                 {message.text}
+                                             </div>
+                                         </div>
+                                     ))}
+                                 </div>
+                                 <div className="flex items-center gap-3 border-t border-slate-200 bg-white p-3">
+                                     <input value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') sendChatMessage(); }} placeholder="Type your question..." className="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 placeholder:text-slate-400 outline-none focus:border-indigo-500" />
+                                     <button onClick={sendChatMessage} className="bg-indigo-500 text-white px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 transition-all">Send</button>
+                                 </div>
+                             </motion.div>
+                         </motion.div>
+                     )}
+                 </AnimatePresence>
+          </>
+       );
+    };
+
+    const ModuleCard = ({ title, desc, icon, gradient, btnGradient, dynamicValue, stats, onClick, variants }) => {
+        // Map gradient prop to an accent color class
+        const accentClass = gradient.includes('FFECE5') ? 'bg-gradient-to-r from-orange-400 to-rose-400' :
+                            gradient.includes('EEF2FF') ? 'bg-gradient-to-r from-indigo-400 to-blue-500' :
+                            'bg-gradient-to-r from-emerald-400 to-teal-500';
+        return (
+        <motion.div variants={variants} onClick={onClick} className="relative h-full bg-white rounded-[32px] p-8 hover:-translate-y-1 transition-all duration-300 group cursor-pointer overflow-hidden border border-slate-200 flex flex-col">
+           <div className={`absolute top-0 left-0 w-full h-1.5 ${accentClass}`}></div>
+           <div className="relative z-10 flex flex-col h-full">
+              <div className="flex justify-between items-start mb-6">
+                 <div className="w-14 h-14 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-center text-slate-700 shadow-sm">{icon}</div>
+                 {dynamicValue && <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg border shadow-sm ${dynamicValue==='FULL'?'bg-rose-50 border-rose-100 text-rose-600':'bg-emerald-50 border-emerald-100 text-emerald-600'}`}>Status: {dynamicValue}</span>}
+              </div>
+              <h3 className="text-2xl font-black text-slate-800 mb-2">{title}</h3>
+              <p className="text-sm font-bold text-slate-500 mb-4 max-w-[80%]">{desc}</p>
+              {stats && (
+                 <div className="flex gap-4 mb-6 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                    {stats.map((s, i) => (
+                       <div key={i} className="flex flex-col">
+                          <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">{s.label}</span>
+                          <span className="text-sm font-black text-slate-700">{s.value}</span>
+                       </div>
+                    ))}
+                 </div>
+              )}
+              <button className={`mt-auto self-start flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r ${btnGradient} text-white font-black uppercase tracking-widest text-xs shadow-md group-hover:shadow-lg transition-all outline-none`}>Open <Icons.ArrowRight /></button>
+           </div>
+        </motion.div>
+    )};
+
+    // --- FULLY FUNCTIONAL FEES QUEUE SYSTEM ---
+    const FeesQueueSystem = ({ queueData, auth }) => {
+        const isFaculty = auth?.role === 'faculty' || auth?.role === 'admin';
+        const [slots, setSlots] = useState(() => JSON.parse(localStorage.getItem('cf_fee_slots')) || []);
+        const [myBooking, setMyBooking] = useState(null);
+        const [view, setView] = useState(isFaculty ? 'faculty_list' : 'pending_fees');
+
+        useEffect(() => {
+            if (!isFaculty) {
+                const mySlots = slots.filter(s => s.studentId === auth?.username);
+                const activeBooking = mySlots.find(s => s.status !== 'CANCELLED');
+                const booking = activeBooking || mySlots.find(s => s.status === 'CANCELLED');
+                
+                setMyBooking(booking || null);
+                
+                if (activeBooking && view !== 'timeline' && view !== 'book_slot') {
+                    setView('timeline');
+                }
+            }
+        }, [slots, isFaculty, auth?.username, view]);
+
+        const pushNotif = (notif) => {
+            const allNotifs = JSON.parse(localStorage.getItem('cf_notifications') || '[]');
+            const msg = notif.message.toLowerCase();
+            const category = notif.category || (msg.includes('fee') || msg.includes('token') ? 'fees' : msg.includes('od ') ? 'od' : 'system');
+            allNotifs.unshift({ ...notif, id: Date.now().toString() + Math.random().toString(36).substr(2, 5), category, time: new Date().toISOString(), read: false });
+            localStorage.setItem('cf_notifications', JSON.stringify(allNotifs));
+            window.dispatchEvent(new Event('cf_notify'));
+        };
+
+        const handleCancelToken = (slotId) => {
+            if (!window.confirm("Are you sure you want to cancel this fee payment token?")) return;
+            
+            const slotToCancel = slots.find(s => s.id === slotId);
+            if (!slotToCancel || slotToCancel.status === 'COMPLETED') return;
+
+            const cancelledRecord = { ...slotToCancel, id: 'canc-' + Date.now(), status: 'CANCELLED', isHistory: true };
+            
+            const updated = slots.map(s => {
+                if (s.id === slotId) {
+                    return { ...s, status: 'AVAILABLE', studentId: null, studentName: null, department: null, token: null };
+                }
+                return s;
+            });
+            updated.push(cancelledRecord);
+
+            localStorage.setItem('cf_fee_slots', JSON.stringify(updated));
+            setSlots(updated);
+            
+            const acts = JSON.parse(localStorage.getItem('cf_activity')||'[]');
+            acts.unshift({ id: Date.now(), text: `Token ${slotToCancel.token} cancelled`, time: new Date().toISOString() });
+            localStorage.setItem('cf_activity', JSON.stringify(acts));
+
+            pushNotif({
+                targetRole: 'faculty',
+                message: `Fee token ${slotToCancel.token} was cancelled by ${auth?.name}.`,
+                details: `Slot Time: ${slotToCancel.time} is now available.`
+            });
+        };
+
+        const handleBookSlot = (slot) => {
+            const hasActive = slots.find(s => s.studentId === auth?.username && s.status !== 'CANCELLED');
+            
+            if (hasActive) {
+                if (hasActive.status === 'COMPLETED' || hasActive.status === 'ACCEPTED') {
+                    alert("You cannot change a token that has already been accepted or completed.");
+                    return;
+                }
+                if (!window.confirm(`You already have a token for ${hasActive.time}. Do you want to cancel it and book ${slot.time} instead?`)) return;
+            } else {
+                if (!window.confirm(`Confirm booking for ${slot.time}?`)) return;
+            }
+
+            const tokenNum = `FQ-${Math.floor(Math.random()*100).toString().padStart(3,'0')}`;
+            const updated = slots.map(s => {
+                if (hasActive && s.id === hasActive.id) {
+                    return { ...s, status: 'AVAILABLE', studentId: null, studentName: null, department: null, token: null };
+                }
+                if (s.id === slot.id) {
+                    return { ...s, status: 'BOOKED', studentId: auth?.username, studentName: auth?.name, department: 'IT', token: tokenNum };
+                }
+                return s;
+            });
+            
+            if (hasActive) {
+                updated.push({ ...hasActive, id: 'canc-' + Date.now(), status: 'CANCELLED', isHistory: true });
+                const acts = JSON.parse(localStorage.getItem('cf_activity')||'[]');
+                acts.unshift({ id: Date.now(), text: `Token ${hasActive.token} cancelled, re-booked to ${slot.time}`, time: new Date().toISOString() });
+                localStorage.setItem('cf_activity', JSON.stringify(acts));
+            } else {
+                const acts = JSON.parse(localStorage.getItem('cf_activity')||'[]');
+                acts.unshift({ id: Date.now(), text: `Fee slot ${slot.time} booked by ${auth?.name}`, time: new Date().toISOString() });
+                localStorage.setItem('cf_activity', JSON.stringify(acts));
+            }
+
+            localStorage.setItem('cf_fee_slots', JSON.stringify(updated));
+            setSlots(updated);
+            setView('timeline');
+            
+            pushNotif({
+                targetRole: 'faculty',
+                message: `Student ${auth?.name} (${auth?.username}) booked a new fee slot.`,
+                details: `New Token: ${tokenNum} | Time: ${slot.time}`
+            });
+        };
+
+        const handleAcceptToken = (slot) => {
+            const updated = slots.map(s => s.id === slot.id ? { ...s, status: 'ACCEPTED' } : s);
+            localStorage.setItem('cf_fee_slots', JSON.stringify(updated));
+            setSlots(updated);
+
+            const acts = JSON.parse(localStorage.getItem('cf_activity')||'[]');
+            acts.unshift({ id: Date.now(), text: `Student ${slot.token} token accepted by Student Affairs`, time: new Date().toISOString() });
+            localStorage.setItem('cf_activity', JSON.stringify(acts));
+
+            pushNotif({
+                targetUsername: slot.studentId,
+                message: `Your fee payment token ${slot.token} has been accepted. Please proceed to the Admission Office.`,
+                details: `Slot Time: ${slot.time}`
+            });
+        };
+
+        const renderPendingFees = () => (
+            <motion.div initial={{opacity:0}} animate={{opacity:1}} className="max-w-2xl mx-auto space-y-6">
+                <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <h3 className="text-xl font-black text-slate-800 tracking-tight mb-6">Pending Fees</h3>
+                    
+                    <div className="space-y-4 mb-8 relative z-10">
+                        <div className="flex justify-between border-b border-slate-100 pb-3"><span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Student Name</span><span className="text-sm font-black text-slate-800">{auth?.name || 'Student'}</span></div>
+                        <div className="flex justify-between border-b border-slate-100 pb-3"><span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Student ID</span><span className="text-sm font-black text-slate-800">{auth?.username || 'ID'}</span></div>
+                        <div className="flex justify-between border-b border-slate-100 pb-3"><span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Department</span><span className="text-sm font-black text-slate-800">Information Technology</span></div>
+                        <div className="flex justify-between border-b border-slate-100 pb-3"><span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Academic Year</span><span className="text-sm font-black text-slate-800">2026-2027</span></div>
+                        <div className="flex justify-between border-b border-slate-100 pb-3"><span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Fee Type</span><span className="text-sm font-black text-slate-800">Tuition Fee</span></div>
+                        <div className="flex justify-between border-b border-slate-100 pb-3"><span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Total Fee</span><span className="text-sm font-black text-slate-800">₹50,000</span></div>
+                        <div className="flex justify-between border-b border-slate-100 pb-3"><span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Paid Amount</span><span className="text-sm font-black text-emerald-600">₹35,000</span></div>
+                        <div className="flex justify-between border-b border-slate-100 pb-3"><span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Pending Amount</span><span className="text-sm font-black text-rose-600">₹15,000</span></div>
+                        <div className="flex justify-between border-b border-slate-100 pb-3"><span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Due Date</span><span className="text-sm font-black text-slate-800">15 Nov 2026</span></div>
+                        <div className="flex justify-between border-b border-slate-100 pb-3"><span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Status</span><span className="text-[10px] font-black bg-rose-100 text-rose-600 px-3 py-1 rounded-full">PENDING</span></div>
+                    </div>
+
+                    <button onClick={()=>setView('book_slot')} className="w-full py-4 bg-blue-600 text-white rounded-xl font-black uppercase tracking-widest shadow-[0_8px_20px_rgba(37,99,235,0.3)] hover:-translate-y-0.5 transition-all outline-none">
+                        BOOK PAYMENT SLOT
+                    </button>
+                </div>
+            </motion.div>
+        );
+
+        const renderBookSlot = () => (
+            <motion.div initial={{opacity:0}} animate={{opacity:1}} className="max-w-4xl mx-auto space-y-6">
+                <button onClick={()=>setView('pending_fees')} className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-600 flex items-center gap-2 mb-4">← BACK TO FEES</button>
+                <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 relative overflow-hidden">
+                    <h3 className="text-xl font-black text-slate-800 tracking-tight mb-2">Book Fee Payment Slot</h3>
+                    <p className="text-sm font-bold text-slate-500 mb-8">Select an available time slot for 08 October 2026</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {slots.map(s => (
+                            <div key={s.id} className={`p-4 rounded-2xl border-2 transition-all ${s.status === 'AVAILABLE' ? 'border-slate-200 hover:border-blue-500 cursor-pointer bg-white' : 'border-slate-100 bg-slate-50 opacity-60'}`} onClick={() => s.status==='AVAILABLE' && handleBookSlot(s)}>
+                                <p className="text-sm font-black text-slate-700 mb-2">{s.time}</p>
+                                <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg ${s.status === 'AVAILABLE' ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-200 text-slate-500'}`}>{s.status}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </motion.div>
+        );
+
+        const renderTimeline = () => {
+            if (!myBooking) return null;
+            const steps = myBooking.status === 'CANCELLED' ? [
+                { label: 'Slot Selected', active: true },
+                { label: 'Token Cancelled', active: true }
+            ] : [
+                { label: 'Slot Selected', active: true },
+                { label: 'Slot Booked', active: true },
+                { label: 'Waiting for Student Affairs', active: myBooking.status !== 'BOOKED' },
+                { label: 'Token Accepted', active: myBooking.status === 'ACCEPTED' || myBooking.status === 'COMPLETED' },
+                { label: 'Proceed to Admission Office', active: myBooking.status === 'ACCEPTED' || myBooking.status === 'COMPLETED' },
+                { label: 'Payment Completed', active: myBooking.status === 'COMPLETED' }
+            ];
+            
+            return (
+                <motion.div initial={{opacity:0}} animate={{opacity:1}} className="max-w-2xl mx-auto space-y-6">
+                    <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 relative overflow-hidden text-center">
+                        <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl shadow-sm ${myBooking.status === 'CANCELLED' ? 'bg-rose-100 text-rose-500' : 'bg-emerald-100 text-emerald-500'}`}>
+                            {myBooking.status === 'CANCELLED' ? '\u2715' : '\u2713'}
+                        </div>
+                        <h3 className="text-2xl font-black text-slate-800 tracking-tight mb-2">
+                            {myBooking.status === 'CANCELLED' ? 'SLOT CANCELLED' : 'SLOT BOOKED'}
+                        </h3>
+                        <div className="inline-block bg-slate-50 border border-slate-100 px-8 py-4 rounded-3xl mb-8 shadow-sm">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Token Number</p>
+                            <p className="text-3xl font-mono font-black text-blue-600">{myBooking.token}</p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 text-left max-w-sm mx-auto mb-10 bg-slate-50 border border-slate-100 p-6 rounded-3xl">
+                            <div><p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Date</p><p className="text-sm font-black text-slate-700">{myBooking.date}</p></div>
+                            <div><p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Time</p><p className="text-sm font-black text-slate-700">{myBooking.time}</p></div>
+                            <div className="col-span-2 pt-2"><p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Status</p><p className={`text-sm font-black uppercase ${myBooking.status === 'CANCELLED' ? 'text-rose-600' : 'text-blue-600'}`}>{myBooking.status === 'BOOKED' ? 'WAITING FOR CONFIRMATION' : myBooking.status}</p></div>
+                        </div>
+
+                        <div className="text-left max-w-sm mx-auto relative pl-8 border-l-2 border-slate-100 space-y-8 mb-10">
+                            {steps.map((step, idx) => (
+                                <div key={idx} className="relative">
+                                    <div className={`absolute -left-[41px] w-5 h-5 rounded-full border-[5px] border-white shadow-sm ${step.active ? (myBooking.status === 'CANCELLED' ? 'bg-rose-500' : 'bg-emerald-500') : 'bg-slate-200'}`}></div>
+                                    <p className={`text-sm font-black tracking-wide ${step.active ? 'text-slate-800' : 'text-slate-400'}`}>{step.label}</p>
+                                </div>
+                            ))}
+                        </div>
+
+                        {myBooking.status !== 'COMPLETED' && myBooking.status !== 'CANCELLED' && (
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8 border-t border-slate-100">
+                                <button onClick={() => handleCancelToken(myBooking.id)} className="px-6 py-3 rounded-xl border-2 border-rose-100 text-rose-500 hover:bg-rose-50 hover:border-rose-200 text-[10px] font-black uppercase tracking-widest transition-all w-full sm:w-auto">
+                                    CANCEL TOKEN
+                                </button>
+                                <button onClick={() => setView('book_slot')} className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-[0_4px_12px_rgba(37,99,235,0.2)] text-[10px] font-black uppercase tracking-widest transition-all w-full sm:w-auto">
+                                    CHOOSE ANOTHER SLOT
+                                </button>
+                            </div>
+                        )}
+                        {myBooking.status === 'CANCELLED' && (
+                            <div className="pt-8 border-t border-slate-100">
+                                <p className="text-sm font-bold text-rose-500 mb-4">This token has been cancelled.</p>
+                                <button onClick={() => setView('book_slot')} className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-[0_4px_12px_rgba(37,99,235,0.2)] text-[10px] font-black uppercase tracking-widest transition-all inline-block">
+                                    BOOK NEW SLOT
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </motion.div>
+            );
+        };
+
+        const renderFacultyList = () => {
+            const activeSlots = slots.filter(s => !s.isHistory);
+            return (
+                <motion.div initial={{opacity:0}} animate={{opacity:1}} className="max-w-[1200px] mx-auto space-y-6">
+                    <div className="flex justify-between items-end mb-4">
+                        <div>
+                            <h2 className="text-2xl font-black text-slate-800 tracking-tight">Student Affairs</h2>
+                            <p className="text-sm font-bold text-slate-500 mt-1">Manage today's fee payment tokens</p>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                        <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100"><p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Slots</p><p className="text-3xl font-black text-slate-800">{activeSlots.length}</p></div>
+                        <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100"><p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Booked</p><p className="text-3xl font-black text-blue-600">{activeSlots.filter(s=>s.status==='BOOKED').length}</p></div>
+                        <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100"><p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Yet to Book</p><p className="text-3xl font-black text-slate-800">{activeSlots.filter(s=>s.status==='AVAILABLE').length}</p></div>
+                        <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100"><p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Accepted</p><p className="text-3xl font-black text-emerald-600">{activeSlots.filter(s=>s.status==='ACCEPTED').length}</p></div>
+                    </div>
+
+                    <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                            <h3 className="text-lg font-black text-slate-800">Today's Fee Tokens</h3>
+                        </div>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead>
+                                    <tr className="bg-slate-50 border-b border-slate-100">
+                                        <th className="py-4 px-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Token</th>
+                                        <th className="py-4 px-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Student Name</th>
+                                        <th className="py-4 px-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Department</th>
+                                        <th className="py-4 px-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Booked Time</th>
+                                        <th className="py-4 px-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Status</th>
+                                        <th className="py-4 px-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {activeSlots.map(s => (
+                                        <tr key={s.id} className="border-b border-slate-50 hover:bg-slate-50/50">
+                                            <td className="py-4 px-6 font-mono font-black text-blue-600 text-sm">{s.token || '—'}</td>
+                                            <td className="py-4 px-6 text-sm font-bold text-slate-700">{s.studentName || '—'} {s.studentId && <span className="text-[10px] text-slate-400 ml-2">({s.studentId})</span>}</td>
+                                            <td className="py-4 px-6 text-sm font-bold text-slate-600">{s.department || '—'}</td>
+                                            <td className="py-4 px-6 text-sm font-black text-slate-700">{s.time}</td>
+                                            <td className="py-4 px-6">
+                                                {s.status === 'AVAILABLE' ? <span className="text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg bg-slate-100 text-slate-500">YET TO BOOK</span> :
+                                                 s.status === 'BOOKED' ? <span className="text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg bg-blue-100 text-blue-600">{s.status}</span> :
+                                                 <span className="text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg bg-emerald-100 text-emerald-600">{s.status}</span>}
+                                            </td>
+                                            <td className="py-4 px-6">
+                                                {s.status === 'BOOKED' ? (
+                                                    <button onClick={()=>handleAcceptToken(s)} className="text-[10px] font-black bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-all outline-none shadow-sm">ACCEPT TOKEN</button>
+                                                ) : <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">—</span>}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </motion.div>
+            );
+        };
+        return (
+            <div className="relative">
+                {isFaculty ? renderFacultyList() : (
+                    view === 'pending_fees' ? renderPendingFees() :
+                    view === 'book_slot' ? renderBookSlot() : renderTimeline()
+                )}
+            </div>
+        );
+    };
+    const StaffMatrixSystem = ({ auth }) => {
+        const [staffData, setStaffData] = useState(() => JSON.parse(localStorage.getItem('cf_staff')) || []);
+        const [filterDept, setFilterDept] = useState('All Departments');
+        const [filterStatus, setFilterStatus] = useState('All Status');
+        const [searchQ, setSearchQ] = useState('');
+        const [toastMsg, setToastMsg] = useState('');
+
+        useEffect(() => {
+            if (staffData.length > 0 && !localStorage.getItem('cf_staff_demo_seeded_v3')) {
+                const targetCounts = {
+                    'AVAILABLE': 45, 'BUSY': 12, 'IN CLASS': 10, 'EXAM-HALL DUTY': 5,
+                    'LAB DUTY': 4, 'IN MEETING': 3, 'DEPARTMENT WORK': 3,
+                    'STUDENT CONSULTATION': 2, 'EVENT DUTY': 2, 'LEAVE': 2,
+                    'HALF-DAY PERMISSION': 1, 'ON DUTY': 1
+                };
+                
+                const statusPool = [];
+                for (let [status, count] of Object.entries(targetCounts)) {
+                    for (let i = 0; i < count; i++) statusPool.push(status);
+                }
+                
+                let poolIdx = 0;
+                
+                const updated = staffData.map(s => {
+                    if (!s.lastUpdated && s.status === 'AVAILABLE' && poolIdx < statusPool.length) {
+                        return { ...s, status: statusPool[poolIdx++] };
+                    }
+                    return s;
+                });
+                
+                localStorage.setItem('cf_staff', JSON.stringify(updated));
+                localStorage.setItem('cf_staff_demo_seeded_v3', 'true');
+                setStaffData(updated);
+            }
+        }, []);
+        
+        // Timetable Editing State
+        const [ttDay, setTtDay] = useState('Monday');
+        const [ttTime, setTtTime] = useState('9:00 AM');
+        const [ttStatus, setTtStatus] = useState('AVAILABLE');
+        const [viewTimetableFor, setViewTimetableFor] = useState(null);
+
+        const isFaculty = auth?.role === 'faculty';
+        const myStaffRecord = staffData.find(s => s.id === auth?.username);
+
+        const handleStatusChange = (newStatus) => {
+            const nowTime = new Date().toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+            const updated = staffData.map(s => s.id === auth?.username ? { ...s, status: newStatus, lastUpdated: nowTime } : s);
+            localStorage.setItem('cf_staff', JSON.stringify(updated));
+            setStaffData(updated);
+
+            const acts = JSON.parse(localStorage.getItem('cf_activity')||'[]');
+            acts.unshift({ id: Date.now(), text: `${auth?.name} changed global status to ${newStatus}`, time: new Date().toISOString() });
+            localStorage.setItem('cf_activity', JSON.stringify(acts));
+
+            setToastMsg('Global Availability updated.');
+            setTimeout(() => setToastMsg(''), 3000);
+        };
+
+        const handleTimetableUpdate = (overrideStatus = null) => {
+            const targetStatus = overrideStatus || ttStatus;
+            const updated = staffData.map(s => {
+                if (s.id === auth?.username) {
+                    const currentTt = s.timetable || {};
+                    const currentDay = currentTt[ttDay] || {};
+                    const newDay = { ...currentDay, [ttTime]: targetStatus };
+                    const newTt = { ...currentTt, [ttDay]: newDay };
+                    return { ...s, timetable: newTt };
+                }
+                return s;
+            });
+            localStorage.setItem('cf_staff', JSON.stringify(updated));
+            setStaffData(updated);
+            setToastMsg(`Timetable updated for ${ttDay} ${ttTime}.`);
+            setTimeout(() => setToastMsg(''), 3000);
+            if(overrideStatus) setTtStatus(overrideStatus);
+        };
+
+        const filteredStaff = staffData.filter(s => {
+            if (filterDept !== 'All Departments' && s.department !== filterDept) return false;
+            if (filterStatus !== 'All Status' && s.status !== filterStatus) return false;
+            if (searchQ && !s.name.toLowerCase().includes(searchQ.toLowerCase())) return false;
+            return true;
+        });
+
+        const statusColors = {
+            'AVAILABLE': 'bg-emerald-500', 
+            'BUSY': 'bg-rose-500', 
+            'IN CLASS': 'bg-blue-500',
+            'LAB DUTY': 'bg-blue-500', 
+            'EXAM-HALL DUTY': 'bg-purple-500', 
+            'IN MEETING': 'bg-orange-500', 
+            'DEPARTMENT WORK': 'bg-orange-500', 
+            'STUDENT CONSULTATION': 'bg-orange-500', 
+            'LEAVE': 'bg-slate-500', 
+            'HALF-DAY PERMISSION': 'bg-slate-500', 
+            'ON DUTY': 'bg-purple-500', 
+            'EVENT DUTY': 'bg-purple-500'
+        };
+        
+        const availabilityOptions = Object.keys(statusColors);
+
+        const notationMap = {
+            'AVAILABLE': { label: 'AVL', bg: 'bg-emerald-50 text-emerald-700 border-emerald-100' },
+            'BUSY': { label: 'BSY', bg: 'bg-rose-50 text-rose-700 border-rose-100' },
+            'IN CLASS': { label: 'CLS', bg: 'bg-blue-50 text-blue-700 border-blue-100' },
+            'LAB DUTY': { label: 'LAB', bg: 'bg-blue-50 text-blue-700 border-blue-100' },
+            'EXAM-HALL DUTY': { label: 'EXM', bg: 'bg-purple-50 text-purple-700 border-purple-100' },
+            'IN MEETING': { label: 'MTG', bg: 'bg-orange-50 text-orange-700 border-orange-100' },
+            'DEPARTMENT WORK': { label: 'DEP', bg: 'bg-orange-50 text-orange-700 border-orange-100' },
+            'STUDENT CONSULTATION': { label: 'CON', bg: 'bg-orange-50 text-orange-700 border-orange-100' },
+            'LEAVE': { label: 'LV', bg: 'bg-slate-50 text-slate-700 border-slate-200' },
+            'HALF-DAY PERMISSION': { label: 'HD', bg: 'bg-slate-50 text-slate-700 border-slate-200' },
+            'ON DUTY': { label: 'OD', bg: 'bg-purple-50 text-purple-700 border-purple-100' },
+            'EVENT DUTY': { label: 'EVT', bg: 'bg-purple-50 text-purple-700 border-purple-100' }
+        };
+
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+        const times = ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM'];
+
+        const getCellStatus = (staff, day, time) => {
+            if (staff?.timetable?.[day]?.[time]) return staff.timetable[day][time];
+            return 'AVAILABLE';
+        };
+
+        const TimetableGrid = ({ staff }) => (
+            <div>
+                <div className="overflow-x-auto border border-slate-200 rounded-xl bg-white shadow-sm">
+                    <table className="w-full text-left border-collapse min-w-[600px]">
+                        <thead>
+                            <tr className="bg-slate-50">
+                                <th className="p-3 text-[10px] font-black uppercase tracking-widest text-slate-500 border-b border-r border-slate-200 w-24">Time</th>
+                                {days.map(d => <th key={d} className="p-3 text-[10px] font-black uppercase tracking-widest text-slate-500 border-b border-slate-200 text-center">{d}</th>)}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {times.map(t => (
+                                <tr key={t} className="border-b border-slate-100 last:border-0">
+                                    <td className="p-3 text-[10px] font-black tracking-widest text-slate-400 border-r border-slate-100 bg-slate-50/50 whitespace-nowrap">{t}</td>
+                                    {days.map(d => {
+                                        const status = getCellStatus(staff, d, t);
+                                        const notation = notationMap[status] || notationMap['AVAILABLE'];
+                                        return (
+                                            <td key={d} className="p-1.5 text-center border-r border-slate-50 last:border-0 hover:bg-slate-50 transition-colors">
+                                                <div className={`py-2 px-1 rounded-lg text-[10px] font-black tracking-wider border ${notation.bg}`}>
+                                                    {notation.label}
+                                                </div>
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-4 text-[9px] font-black uppercase tracking-widest text-slate-500 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    {Object.entries(notationMap).map(([status, config]) => (
+                        <div key={status} className="flex items-center gap-1.5">
+                            <span className={`w-5 h-5 flex items-center justify-center rounded text-[8px] border ${config.bg}`}>{config.label}</span>
+                            {status}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        return (
+            <motion.div initial={{opacity:0}} animate={{opacity:1}} className="max-w-[1400px] mx-auto space-y-8 relative">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-white/10 pb-6">
+                    <div>
+                        <h2 className="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-3">
+                            STAFF AVAILABILITY MATRIX <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                        </h2>
+                        <p className="text-sm font-bold text-slate-500 mt-2 tracking-wide uppercase">Find the right staff member at the right time.</p>
+                    </div>
+                </div>
+
+                {isFaculty && myStaffRecord && (
+                    <div className="space-y-6">
+                        {/* GLOBAL STATUS CARD */}
+                        <div className="bg-white rounded-[32px] p-8 shadow-sm border border-indigo-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
+                            <div className="absolute right-0 top-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
+                            <div>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-2">My Global Status</p>
+                                <h3 className="text-xl font-black text-slate-800 mb-1">{auth.name}</h3>
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mt-3">
+                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${statusColors[myStaffRecord.status]?.replace('bg-','text-') || 'text-slate-600'} bg-slate-50 border border-slate-100`}>
+                                        <span className={`w-1.5 h-1.5 rounded-full ${statusColors[myStaffRecord.status] || 'bg-slate-400'}`}></span>
+                                        CURRENT STATUS: {myStaffRecord.status}
+                                    </span>
+                                    <span className="text-[10px] font-bold text-slate-400">
+                                        Last Updated: {myStaffRecord.lastUpdated || 'Never'}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="w-full md:w-auto flex flex-col gap-2 relative z-10">
+                                <select 
+                                    value={myStaffRecord.status} 
+                                    onChange={(e) => handleStatusChange(e.target.value)}
+                                    className="w-full md:w-64 bg-slate-50 border border-slate-200 text-sm font-black text-slate-700 px-5 py-3.5 rounded-xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all cursor-pointer appearance-none"
+                                >
+                                    {availabilityOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                </select>
+                            </div>
+                            
+                            <AnimatePresence>
+                                {toastMsg && (
+                                    <motion.div initial={{opacity:0, y:-10}} animate={{opacity:1, y:0}} exit={{opacity:0, y:-10}} className="absolute bottom-4 right-8 bg-slate-800 text-white px-4 py-2 rounded-lg shadow-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-2 z-20">
+                                        <Icons.CheckSquare className="w-4 h-4 text-emerald-400" /> {toastMsg}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+
+                        {/* WEEKLY TIMETABLE CARD */}
+                        <div className="bg-white rounded-[32px] p-8 shadow-sm border border-slate-100 relative">
+                            <h3 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-2">
+                                <Icons.Clock /> Weekly Timetable
+                            </h3>
+                            
+                            <div className="flex flex-col md:flex-row items-end gap-4 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                <div className="flex-1 w-full">
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Day</label>
+                                    <select value={ttDay} onChange={e=>setTtDay(e.target.value)} className="w-full bg-white border border-slate-200 text-xs font-bold text-slate-700 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20">
+                                        {days.map(d=><option key={d}>{d}</option>)}
+                                    </select>
+                                </div>
+                                <div className="flex-1 w-full">
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Time Slot</label>
+                                    <select value={ttTime} onChange={e=>setTtTime(e.target.value)} className="w-full bg-white border border-slate-200 text-xs font-bold text-slate-700 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20">
+                                        {times.map(t=><option key={t}>{t}</option>)}
+                                    </select>
+                                </div>
+                                <div className="flex-1 w-full">
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Slot Status</label>
+                                    <select value={ttStatus} onChange={e=>setTtStatus(e.target.value)} className="w-full bg-white border border-slate-200 text-xs font-bold text-slate-700 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20">
+                                        {availabilityOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                    </select>
+                                </div>
+                                <div className="flex items-center gap-2 w-full md:w-auto">
+                                    <button onClick={()=>handleTimetableUpdate()} className="flex-1 md:flex-none px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-md">
+                                        Update Slot
+                                    </button>
+                                    <button onClick={()=>handleTimetableUpdate('AVAILABLE')} className="flex-1 md:flex-none px-6 py-3 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 text-xs font-black uppercase tracking-widest rounded-xl transition-all">
+                                        Clear Slot
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <TimetableGrid staff={myStaffRecord} />
+                        </div>
+                    </div>
+                )}
+
+                {/* DIRECTORY VIEW FOR STUDENTS AND ADMINS */}
+                {!isFaculty && (
+                    <div className="space-y-8">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Available</p>
+                                <p className="text-3xl font-black text-emerald-600">{staffData.filter(s=>s.status==='AVAILABLE').length} Staff</p>
+                            </div>
+                            <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Busy / Engaged</p>
+                                <p className="text-3xl font-black text-rose-600">{staffData.filter(s=>['BUSY', 'IN CLASS', 'IN MEETING', 'DEPARTMENT WORK', 'STUDENT CONSULTATION'].includes(s.status)).length} Staff</p>
+                            </div>
+                            <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">On Duty</p>
+                                <p className="text-3xl font-black text-purple-600">{staffData.filter(s=>s.status.includes('DUTY')).length} Staff</p>
+                            </div>
+                            <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Leave / Permission</p>
+                                <p className="text-3xl font-black text-slate-500">{staffData.filter(s=>['LEAVE', 'HALF-DAY PERMISSION'].includes(s.status)).length} Staff</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-[32px] p-6 shadow-sm border border-slate-100">
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <div className="flex-1 relative">
+                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><Icons.Search /></div>
+                                    <input value={searchQ} onChange={e=>setSearchQ(e.target.value)} placeholder="Search staff by name..." className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 outline-none focus:border-blue-500 focus:bg-white transition-all" />
+                                </div>
+                                <select value={filterDept} onChange={e=>setFilterDept(e.target.value)} className="py-4 px-6 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 outline-none focus:border-blue-500 focus:bg-white transition-all appearance-none cursor-pointer">
+                                    <option>All Departments</option>
+                                    {['CSE','IT','ECE','EEE','MECH','CIVIL','VLSI','MBA','MCA'].map(d=><option key={d}>{d}</option>)}
+                                </select>
+                                <select value={filterStatus} onChange={e=>setFilterStatus(e.target.value)} className="py-4 px-6 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 outline-none focus:border-blue-500 focus:bg-white transition-all appearance-none cursor-pointer">
+                                    <option>All Status</option>
+                                    {availabilityOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {filteredStaff.map((staff) => (
+                                <div key={staff.id} className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-lg transition-all flex flex-col h-full">
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-full blur-2xl pointer-events-none -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform"></div>
+                                    <div className="flex items-start justify-between mb-4 relative z-10">
+                                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 flex items-center justify-center text-blue-500 font-black text-lg">
+                                            {staff.name.charAt(4)}
+                                        </div>
+                                        <span className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${statusColors[staff.status]?.replace('bg-','text-') || 'text-slate-500'} bg-slate-50 border border-slate-100`}>
+                                            <span className={`w-1.5 h-1.5 rounded-full ${statusColors[staff.status] || 'bg-slate-500'}`}></span>
+                                            {staff.status}
+                                        </span>
+                                    </div>
+                                    <h4 className="text-lg font-black text-slate-800 mb-1">{staff.name}</h4>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">{staff.designation}</p>
+                                    
+                                    <div className="space-y-2 mb-4 flex-1">
+                                        <div className="flex justify-between items-center bg-slate-50 px-3 py-2 rounded-xl">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">ID</span>
+                                            <span className="text-xs font-black text-slate-700">{staff.id}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center bg-slate-50 px-3 py-2 rounded-xl">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Dept</span>
+                                            <span className="text-xs font-black text-slate-700">{staff.department}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center bg-slate-50 px-3 py-2 rounded-xl">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Room</span>
+                                            <span className="text-xs font-black text-slate-700">{staff.room}</span>
+                                        </div>
+                                    </div>
+
+                                    <button onClick={() => setViewTimetableFor(staff)} className="w-full py-2.5 bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2">
+                                        <Icons.Clock /> View Timetable
+                                    </button>
+                                </div>
+                            ))}
+                            {filteredStaff.length === 0 && (
+                                <div className="col-span-full py-20 text-center">
+                                    <p className="text-lg font-bold color-black text-slate-400">No staff found matching criteria.</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                <AnimatePresence>
+                    {viewTimetableFor && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                            <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={()=>setViewTimetableFor(null)} className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></motion.div>
+                            <motion.div initial={{scale:0.95, opacity:0}} animate={{scale:1, opacity:1}} exit={{scale:0.95, opacity:0}} className="relative bg-white rounded-[32px] shadow-2xl p-6 lg:p-8 max-w-4xl w-full z-10 overflow-hidden max-h-[90vh] flex flex-col">
+                                <div className="flex items-start justify-between mb-6 pb-6 border-b border-slate-100">
+                                    <div>
+                                        <h3 className="text-2xl font-black text-slate-800 mb-1">{viewTimetableFor.name}'s Timetable</h3>
+                                        <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{viewTimetableFor.designation} • {viewTimetableFor.department}</p>
+                                    </div>
+                                    <button onClick={()=>setViewTimetableFor(null)} className="w-10 h-10 bg-slate-50 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-600 transition-colors shrink-0">
+                                        ✕
+                                    </button>
+                                </div>
+                                <div className="overflow-y-auto no-scrollbar flex-1 pb-4">
+                                    <TimetableGrid staff={viewTimetableFor} />
+                                </div>
+                            </motion.div>
+                        </div>
+                    )}
+                </AnimatePresence>
+            </motion.div>
+        );
+    };
+    const SmartODSystem = ({ auth }) => {
+        const isFaculty = auth?.role === 'faculty' || auth?.role === 'admin';
+        const [view, setView] = useState('dashboard');
+        const [step, setStep] = useState(1);
+        const [toast, setToast] = useState(null);
+        const [filter, setFilter] = useState('ALL');
+        const [visibleCount, setVisibleCount] = useState(10);
+        const [rejectPrompt, setRejectPrompt] = useState(null);
+        const [rejectReason, setRejectReason] = useState('');
+        
+        const initForm = {
+            studentName: auth?.name || 'Priyanka S', studentId: auth?.username || '24BCE012', department: 'Information Technology',
+            year: 'III Year', section: 'A', email: 'priyanka@campus.edu', phone: '9876543210',
+            eventName: '', eventType: 'Hackathon', organizer: '', venue: '', city: '',
+            eventDate: '', startTime: '', endTime: '', odFrom: '', odTo: '', days: 1, reason: '', mentorName: '', filename: '', confirmed: false
+        };
+        const [formData, setFormData] = useState(initForm);
+        
+        const [apps, setApps] = useState(() => {
+            const defaultApps = [
+                { id: 'OD-2026-0042', studentName: 'Priyanka S', studentId: '24BCE012', eventName: 'National Innovation Hackathon', odDate: '08 Oct 2026', submitDate: '08 Oct 2026', status: 'PENDING', stage: 'mentor', approvals: { mentor: 'pending', advisor: 'pending', coordinator: 'pending' }, academicConflict: false, officialEvent: true },
+                { id: 'OD-2026-0037', studentName: 'Arun Kumar', studentId: '24BCE013', eventName: 'Technical Workshop', odDate: '02 Oct 2026', submitDate: '01 Oct 2026', status: 'APPROVED', stage: 'completed', approvals: { mentor: 'approved', advisor: 'approved', coordinator: 'approved' }, academicConflict: false, officialEvent: true },
+                { id: 'OD-2026-0028', studentName: 'Suresh R', studentId: '24BCE014', eventName: 'Symposium', odDate: '25 Sep 2026', submitDate: '23 Sep 2026', status: 'REJECTED', stage: 'advisor', approvals: { mentor: 'approved', advisor: 'rejected', coordinator: 'pending' }, rejectReason: 'Please provide a valid event invitation.', academicConflict: true, officialEvent: false }
+            ];
+            
+            let currentApps = [];
+            const saved = localStorage.getItem('smartod_apps');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    const demoFallback = {
+                        'student001': { name: 'Priyanka S', id: '24BCE012' },
+                        'student002': { name: 'Arun Kumar', id: '24BCE013' },
+                        'student003': { name: 'Suresh R', id: '24BCE014' },
+                        '24BCE012': { name: 'Priyanka S', id: '24BCE012' },
+                        '24BCE013': { name: 'Arun Kumar', id: '24BCE013' },
+                        '24BCE014': { name: 'Suresh R', id: '24BCE014' }
+                    };
+                    const fallbacks = Object.values(demoFallback);
+                    currentApps = parsed.map(app => {
+                        let finalName = app.studentName;
+                        let finalId = app.studentId;
+                        if (!finalName || finalName.trim() === '') finalName = null;
+                        if (!finalId || finalId.trim() === '') finalId = null;
+                        if (!finalName && finalId && demoFallback[finalId]) {
+                            finalName = demoFallback[finalId].name;
+                        } else if (!finalName) {
+                            const num = parseInt(app.id.replace(/\D/g, '')) || 0;
+                            const fallback = fallbacks[num % fallbacks.length];
+                            finalName = fallback.name;
+                            if (!finalId) finalId = fallback.id;
+                        }
+                        if (!finalId) finalId = 'ID Unavailable';
+                        return { ...app, studentName: finalName, studentId: finalId };
+                    });
+                } catch(e) {
+                    currentApps = defaultApps;
+                }
+            } else {
+                currentApps = defaultApps;
+            }
+
+            if (currentApps.length < 15) {
+                const needed = 15 - currentApps.length;
+                const names = [
+                    {n:'Deepa V', id:'24BCE015'}, {n:'Vikram M', id:'24BCE016'}, {n:'Pooja N', id:'24BCE017'},
+                    {n:'Rahul K', id:'24BCE018'}, {n:'Sneha P', id:'24BCE019'}, {n:'Karthik S', id:'24BCE020'}
+                ];
+                const events = ['Hackathon', 'Symposium', 'Workshop', 'Conference', 'Tech Fest', 'Seminar'];
+                const statuses = ['PENDING', 'APPROVED', 'REJECTED'];
+                const seeds = [];
+                for(let i = 0; i < needed; i++) {
+                    const idx = currentApps.length + i;
+                    const student = names[idx % names.length];
+                    const st = statuses[idx % 3];
+                    seeds.push({
+                        id: `OD-2026-10${idx.toString().padStart(2, '0')}`,
+                        studentName: student.n,
+                        studentId: student.id,
+                        eventName: events[idx % events.length],
+                        odDate: `1${(idx%9)+1} Oct 2026`,
+                        submitDate: `10 Oct 2026`,
+                        status: st,
+                        stage: st==='APPROVED'?'completed':st==='REJECTED'?'advisor':'mentor',
+                        approvals: { mentor: st==='REJECTED'?'rejected':st==='APPROVED'?'approved':'pending', advisor: st==='APPROVED'?'approved':'pending', coordinator: 'pending' },
+                        academicConflict: idx%5===0,
+                        officialEvent: idx%4!==0,
+                        rejectReason: st==='REJECTED' ? 'Insufficient details provided.' : undefined
+                    });
+                }
+                currentApps = [...currentApps, ...seeds];
+            }
+            
+            return currentApps;
+        });
+        
+        const [currentAppId, setCurrentAppId] = useState(null);
+        const currentApp = apps.find(a => a.id === currentAppId);
+        
+        useEffect(() => {
+            localStorage.setItem('smartod_apps', JSON.stringify(apps));
+        }, [apps]);
+
+        const showToast = (msg) => {
+            setToast(msg);
+            setTimeout(() => setToast(null), 4000);
+        };
+        
+        const calculateDays = (from, to) => {
+            if (!from || !to) return 1;
+            const d1 = new Date(from);
+            const d2 = new Date(to);
+            const diff = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24)) + 1;
+            return diff > 0 ? diff : 1;
+        };
+
+        const submitApplication = () => {
+            const newId = `OD-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+            const submitD = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+            
+            // Auto check (simulated frontend logic)
+            const hasConflict = Math.random() > 0.7; 
+            const isOfficial = Math.random() > 0.2;
+
+            const finalStudentName = (formData.studentName && formData.studentName.trim() !== '') ? formData.studentName : (auth?.name || 'Demo Student');
+            const finalStudentId = (formData.studentId && formData.studentId.trim() !== '') ? formData.studentId : (auth?.username || 'ID Unavailable');
+
+            const newApp = {
+                ...formData,
+                studentName: finalStudentName,
+                studentId: finalStudentId,
+                id: newId,
+                submitDate: submitD,
+                odDate: formData.odFrom || submitD,
+                status: 'PENDING',
+                stage: 'mentor',
+                approvals: { mentor: 'pending', advisor: 'pending', coordinator: 'pending' },
+                academicConflict: hasConflict,
+                officialEvent: isOfficial
+            };
+            setApps([newApp, ...apps]);
+            setCurrentAppId(newId);
+            setView('success');
+            showToast("OD application submitted successfully.");
+            
+            const acts = JSON.parse(localStorage.getItem('cf_activity')||'[]');
+            acts.unshift({ id: Date.now(), text: `${newId} submitted by ${formData.studentName}`, time: new Date().toISOString() });
+            localStorage.setItem('cf_activity', JSON.stringify(acts));
+
+            // Notify Faculty
+            pushNotif({
+                targetRole: 'faculty',
+                message: `New OD Application submitted by ${formData.studentName} (${formData.studentId}).`,
+                details: `Event: ${formData.eventName} | Dates: ${formData.odFrom}`
+            });
+
+            // Notify Student
+            pushNotif({
+                targetUsername: formData.studentId,
+                message: `Your OD application ${newId} was submitted successfully.`,
+                details: `Event: ${formData.eventName}`
+            });
+        };
+
+        const pushNotif = (notif) => {
+            const allNotifs = JSON.parse(localStorage.getItem('cf_notifications') || '[]');
+            const msg = notif.message.toLowerCase();
+            const category = notif.category || (msg.includes('fee') || msg.includes('token') ? 'fees' : msg.includes('od ') ? 'od' : 'system');
+            allNotifs.unshift({ ...notif, id: Date.now().toString() + Math.random().toString(36).substr(2, 5), category, time: new Date().toISOString(), read: false });
+            localStorage.setItem('cf_notifications', JSON.stringify(allNotifs));
+            window.dispatchEvent(new Event('cf_notify'));
+        };
+
+        const handleFacultyDecision = (appId, decision, reason = '') => {
+            setApps(prev => prev.map(a => {
+                if (a.id !== appId) return a;
+                if (decision === 'approved') {
+                    pushNotif({
+                        targetUsername: a.studentId,
+                        message: `Your OD application ${a.id} has been approved by Faculty.`,
+                        details: `Event: ${a.eventName}`
+                    });
+                    return { ...a, status: 'APPROVED', stage: 'completed', approvals: { mentor: 'approved', advisor: 'approved', coordinator: 'approved' } };
+                } else {
+                    pushNotif({
+                        targetUsername: a.studentId,
+                        message: `Your OD application ${a.id} has been rejected.`,
+                        details: `Reason: ${reason}`
+                    });
+                    return { ...a, status: 'REJECTED', rejectReason: reason, approvals: { mentor: 'rejected', advisor: 'rejected', coordinator: 'rejected' } };
+                }
+            }));
+            showToast(decision === 'approved' ? "OD application approved successfully." : "OD application rejected.");
+        };
+
+        const updateApproval = (appId, role, status) => {
+            setApps(prev => prev.map(a => {
+                if (a.id !== appId) return a;
+                const newApprovals = { ...a.approvals, [role]: status };
+                let newStage = a.stage;
+                let newStatus = a.status;
+                
+                if (status === 'rejected') {
+                    newStatus = 'REJECTED';
+                    showToast(`Your OD application was rejected.`);
+                } else if (status === 'approved') {
+                    if (role === 'mentor' && newApprovals.advisor === 'pending') { newStage = 'advisor'; showToast("Mentor has approved your OD request."); }
+                    else if (role === 'advisor' && newApprovals.coordinator === 'pending') { newStage = 'coordinator'; showToast("Your OD request is waiting for Advisor verification."); }
+                    else if (role === 'coordinator') { 
+                        newStage = 'completed'; 
+                        newStatus = 'APPROVED'; 
+                        showToast("Your OD application has been approved! Digital Pass is ready.");
+                    }
+                } else {
+                    newStatus = 'PENDING';
+                    if (role === 'mentor') newStage = 'mentor';
+                    if (role === 'advisor') newStage = 'advisor';
+                    if (role === 'coordinator') newStage = 'coordinator';
+                }
+                
+                return { ...a, approvals: newApprovals, stage: newStage, status: newStatus, rejectReason: status === 'rejected' ? 'Please provide a valid event invitation.' : '' };
+            }));
+        };
+
+        const StatusBadge = ({ status }) => {
+            if (status === 'APPROVED') return <span className="bg-emerald-100 text-emerald-600 border border-emerald-200 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest inline-flex items-center gap-1">✓ {status}</span>;
+            if (status === 'REJECTED') return <span className="bg-rose-100 text-rose-600 border border-rose-200 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest inline-flex items-center gap-1">✕ {status}</span>;
+            return <span className="bg-amber-100 text-amber-600 border border-amber-200 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest inline-flex items-center gap-1">● {status}</span>;
+        };
+
+        const renderDashboard = () => {
+            const filteredApps = apps.filter(a => filter === 'ALL' || a.status === filter);
+            return (
+                <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} exit={{opacity:0, y:-20}} className="flex flex-col gap-6">
+                    <div className="flex justify-between items-center bg-white/70 backdrop-blur-xl p-8 rounded-[32px] shadow-glass border border-white">
+                        <div>
+                            <h2 className="text-3xl font-black text-slate-800">SMART OD PROTOCOL</h2>
+                            <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mt-2">Apply for On-Duty permission digitally — no paperwork, no manual queues.</p>
+                        </div>
+                        <button onClick={() => { setFormData(initForm); setStep(1); setView('apply'); }} className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:shadow-lg text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest shadow-md transition-all">
+                            + APPLY FOR OD
+                        </button>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div className="bg-white/85 backdrop-blur-xl rounded-3xl p-6 shadow-glass border border-white flex flex-col items-center text-center">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Total Applications</p>
+                            <p className="text-3xl font-black text-slate-800">{apps.length}</p>
+                        </div>
+                        <div className="bg-white/85 backdrop-blur-xl rounded-3xl p-6 shadow-glass border border-white flex flex-col items-center text-center">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-amber-500 mb-1">Pending</p>
+                            <p className="text-3xl font-black text-amber-600">{apps.filter(a=>a.status==='PENDING').length}</p>
+                        </div>
+                        <div className="bg-white/85 backdrop-blur-xl rounded-3xl p-6 shadow-glass border border-white flex flex-col items-center text-center">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500 mb-1">Approved</p>
+                            <p className="text-3xl font-black text-emerald-600">{apps.filter(a=>a.status==='APPROVED').length}</p>
+                        </div>
+                        <div className="bg-white/85 backdrop-blur-xl rounded-3xl p-6 shadow-glass border border-white flex flex-col items-center text-center">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-rose-500 mb-1">Rejected</p>
+                            <p className="text-3xl font-black text-rose-600">{apps.filter(a=>a.status==='REJECTED').length}</p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
+                        <div className="xl:col-span-2 bg-white/85 backdrop-blur-xl rounded-[32px] p-8 shadow-glass border border-white">
+                            <div className="flex justify-between items-center mb-6">
+                                <h3 className="text-sm font-black uppercase tracking-widest text-slate-800">MY OD APPLICATIONS</h3>
+                                <div className="flex gap-2">
+                                    {['ALL', 'PENDING', 'APPROVED', 'REJECTED'].map(f => (
+                                        <button key={f} onClick={()=>setFilter(f)} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all outline-none ${filter===f ? 'bg-slate-800 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>{f}</button>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="border-b border-slate-200">
+                                            <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Application ID</th>
+                                            <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Event</th>
+                                            <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-slate-400">OD Date</th>
+                                            <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Status</th>
+                                            <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filteredApps.map(a => (
+                                            <tr key={a.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50/50 transition-all align-middle">
+                                                <td className="py-4 align-middle font-bold text-slate-700 text-sm">{a.id}</td>
+                                                <td className="py-4 align-middle font-bold text-slate-700 text-sm">{a.eventName}</td>
+                                                <td className="py-4 align-middle text-xs font-bold text-slate-500">{a.odDate}</td>
+                                                <td className="py-4 align-middle"><StatusBadge status={a.status} /></td>
+                                                <td className="py-4 align-middle">
+                                                    {a.status === 'APPROVED' ? (
+                                                        <button onClick={() => { setCurrentAppId(a.id); setView('pass'); }} className="inline-flex items-center justify-center bg-indigo-100 hover:bg-indigo-200 text-indigo-600 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all min-w-[90px]">VIEW PASS</button>
+                                                    ) : a.status === 'REJECTED' ? (
+                                                        <button onClick={() => { setCurrentAppId(a.id); setView('track'); }} className="inline-flex items-center justify-center bg-rose-100 hover:bg-rose-200 text-rose-600 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all min-w-[90px]">EDIT</button>
+                                                    ) : (
+                                                        <button onClick={() => { setCurrentAppId(a.id); setView('track'); }} className="inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all min-w-[90px]">TRACK</button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                                {filteredApps.length === 0 && <div className="text-center py-8 text-sm font-bold text-slate-500">No applications found.</div>}
+                            </div>
+                        </div>
+
+                        <div className="bg-white/85 backdrop-blur-xl rounded-[32px] p-8 shadow-glass border border-white">
+                            <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-6 text-center">TRADITIONAL OD vs SMART OD</h3>
+                            <div className="flex justify-between items-stretch gap-4 relative">
+                                <div className="flex-1 bg-slate-50 rounded-2xl p-4 border border-slate-200 text-center relative z-10 opacity-70">
+                                    <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-4">TRADITIONAL</p>
+                                    <ul className="space-y-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                                        <li>Paper Form</li><li>↓</li><li>Manual Submission</li><li>↓</li><li>Find Mentor</li><li>↓</li><li>Manual Verification</li><li>↓</li><li>Paper OD</li>
+                                    </ul>
+                                </div>
+                                <div className="flex-1 bg-gradient-to-b from-emerald-50 to-teal-50 rounded-2xl p-4 border border-emerald-100 text-center relative z-10 shadow-sm">
+                                    <p className="text-[9px] font-black uppercase tracking-widest text-emerald-600 mb-4">SMART OD</p>
+                                    <ul className="space-y-3 text-[10px] font-bold text-emerald-600/80 uppercase tracking-widest">
+                                        <li>Online Application</li><li>↓</li><li>Digital Verification</li><li>↓</li><li>Live Status Tracking</li><li>↓</li><li>Multi-Level Approval</li><li>↓</li><li className="text-emerald-700 font-black">Digital OD Pass</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p className="text-center text-[10px] font-black uppercase tracking-widest text-slate-400 mt-6 bg-white py-2 rounded-xl border border-slate-100">Less paperwork • Faster verification • Transparent tracking</p>
+                        </div>
+                    </div>
+                </motion.div>
+            );
+        };
+
+        const renderApplyForm = () => {
+            const steps = ["STUDENT DETAILS", "EVENT DETAILS", "OD DETAILS", "DOCUMENT", "REVIEW & SUBMIT"];
+            return (
+                <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} exit={{opacity:0, y:-20}} className="max-w-4xl mx-auto flex flex-col gap-6">
+                    <div className="bg-white/70 backdrop-blur-xl p-8 rounded-[32px] shadow-glass border border-white mb-4">
+                        <div className="flex justify-between items-center mb-8">
+                            <h2 className="text-2xl font-black text-slate-800">APPLY FOR OD</h2>
+                            <button onClick={()=>setView('dashboard')} className="text-slate-400 hover:text-slate-600 font-bold">✕ Cancel</button>
+                        </div>
+                        <div className="flex justify-between items-center relative">
+                            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-100 rounded-full z-0"></div>
+                            <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-blue-500 rounded-full z-0 transition-all duration-500" style={{width: `${((step-1)/(steps.length-1))*100}%`}}></div>
+                            {steps.map((s, i) => (
+                                <div key={i} className={`relative z-10 flex flex-col items-center gap-2 ${step > i ? 'text-blue-600' : 'text-slate-400'}`}>
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-xs transition-all ${step > i ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' : 'bg-slate-200 text-slate-500'}`}>
+                                        {step > i + 1 ? '✓' : `0${i+1}`}
+                                    </div>
+                                    <span className="text-[9px] font-black uppercase tracking-widest hidden md:block absolute -bottom-6 w-max">{s}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="bg-white/85 backdrop-blur-xl rounded-[32px] p-8 shadow-glass border border-white">
+                        {step === 1 && (
+                            <div className="space-y-6 animate-fadeIn">
+                                <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 mb-4 border-b border-slate-100 pb-2">Student Details</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div><label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Student Name</label><input value={formData.studentName} onChange={e=>setFormData({...formData, studentName: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 font-bold outline-none focus:border-blue-500" /></div>
+                                    <div><label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Student ID</label><input value={formData.studentId} onChange={e=>setFormData({...formData, studentId: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 font-bold outline-none focus:border-blue-500" /></div>
+                                    <div><label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Department</label><input value={formData.department} onChange={e=>setFormData({...formData, department: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 font-bold outline-none focus:border-blue-500" /></div>
+                                    <div><label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Year</label><input value={formData.year} onChange={e=>setFormData({...formData, year: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 font-bold outline-none focus:border-blue-500" /></div>
+                                    <div><label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Email</label><input value={formData.email} onChange={e=>setFormData({...formData, email: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 font-bold outline-none focus:border-blue-500" /></div>
+                                    <div><label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Phone Number</label><input value={formData.phone} onChange={e=>setFormData({...formData, phone: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 font-bold outline-none focus:border-blue-500" /></div>
+                                </div>
+                            </div>
+                        )}
+                        {step === 2 && (
+                            <div className="space-y-6 animate-fadeIn">
+                                <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 mb-4 border-b border-slate-100 pb-2">Event Details</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div><label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Event Name</label><input value={formData.eventName} onChange={e=>setFormData({...formData, eventName: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 font-bold outline-none focus:border-blue-500" /></div>
+                                    <div><label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Event Type</label><select value={formData.eventType} onChange={e=>setFormData({...formData, eventType: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 font-bold outline-none focus:border-blue-500 appearance-none"><option>Hackathon</option><option>Workshop</option><option>Conference</option><option>Symposium</option><option>Technical Event</option><option>Other</option></select></div>
+                                    <div><label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Organizer</label><input value={formData.organizer} onChange={e=>setFormData({...formData, organizer: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 font-bold outline-none focus:border-blue-500" /></div>
+                                    <div><label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Venue / City</label><input value={formData.venue} onChange={e=>setFormData({...formData, venue: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 font-bold outline-none focus:border-blue-500" /></div>
+                                    <div><label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Event Date</label><input type="date" value={formData.eventDate} onChange={e=>setFormData({...formData, eventDate: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 font-bold outline-none focus:border-blue-500" /></div>
+                                </div>
+                            </div>
+                        )}
+                        {step === 3 && (
+                            <div className="space-y-6 animate-fadeIn">
+                                <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 mb-4 border-b border-slate-100 pb-2">OD Details</h3>
+                                <div className="bg-indigo-50 border border-indigo-100 p-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-indigo-500 mb-6 text-center">Your OD request will be digitally verified by the required authorities.</div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div><label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">OD From Date</label><input type="date" value={formData.odFrom} onChange={e=>{const d = calculateDays(e.target.value, formData.odTo); setFormData({...formData, odFrom: e.target.value, days: d})}} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 font-bold outline-none focus:border-blue-500" /></div>
+                                    <div><label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">OD To Date</label><input type="date" value={formData.odTo} onChange={e=>{const d = calculateDays(formData.odFrom, e.target.value); setFormData({...formData, odTo: e.target.value, days: d})}} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 font-bold outline-none focus:border-blue-500" /></div>
+                                    <div><label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Number of Days</label><div className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 font-bold">{formData.days} Day(s)</div></div>
+                                    <div><label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Faculty / Mentor Name</label><input value={formData.mentorName} onChange={e=>setFormData({...formData, mentorName: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 font-bold outline-none focus:border-blue-500" /></div>
+                                    <div className="md:col-span-2"><label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Reason for OD</label><textarea rows="3" value={formData.reason} onChange={e=>setFormData({...formData, reason: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 font-bold outline-none focus:border-blue-500 resize-none"></textarea></div>
+                                </div>
+                            </div>
+                        )}
+                        {step === 4 && (
+                            <div className="space-y-6 animate-fadeIn">
+                                <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 mb-4 border-b border-slate-100 pb-2">SUPPORTING DOCUMENT</h3>
+                                <div className="border-2 border-dashed border-slate-300 rounded-3xl p-12 text-center bg-slate-50 hover:bg-slate-100 transition-all">
+                                    {formData.filename ? (
+                                        <div className="flex flex-col items-center">
+                                            <div className="w-16 h-16 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mb-4"><Icons.CheckSquare /></div>
+                                            <p className="text-sm font-bold text-slate-700 mb-1">✓ Document uploaded</p>
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-blue-500 mb-4">{formData.filename}</p>
+                                            <p className="text-[10px] font-bold text-slate-400 mb-6">2.4 MB • PDF</p>
+                                            <button onClick={()=>setFormData({...formData, filename: ''})} className="bg-white border border-slate-200 text-slate-600 px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm">REMOVE FILE</button>
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col items-center">
+                                            <div className="w-16 h-16 bg-white border border-slate-200 text-slate-400 rounded-full flex items-center justify-center mb-4 text-2xl font-black">↑</div>
+                                            <p className="text-sm font-bold text-slate-700 mb-1">Drag & Drop</p>
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">Event Invitation, Certificate, or Proof</p>
+                                            <label className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md cursor-pointer hover:shadow-lg transition-all">
+                                                CHOOSE FILE
+                                                <input type="file" className="hidden" onChange={(e)=>{if(e.target.files[0]) setFormData({...formData, filename: e.target.files[0].name})}} />
+                                            </label>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                        {step === 5 && (
+                            <div className="space-y-6 animate-fadeIn">
+                                <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 mb-4 border-b border-slate-100 pb-2">REVIEW APPLICATION</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                                    <div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Student</p><p className="font-bold text-slate-700 text-sm">{formData.studentName} ({formData.studentId})</p></div>
+                                    <div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Department</p><p className="font-bold text-slate-700 text-sm">{formData.department}</p></div>
+                                    <div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Event</p><p className="font-bold text-slate-700 text-sm">{formData.eventName || 'N/A'}</p></div>
+                                    <div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Venue</p><p className="font-bold text-slate-700 text-sm">{formData.venue || 'N/A'}</p></div>
+                                    <div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">OD Date</p><p className="font-bold text-slate-700 text-sm">{formData.odFrom || 'N/A'}</p></div>
+                                    <div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Duration</p><p className="font-bold text-slate-700 text-sm">{formData.days} Day(s)</p></div>
+                                    <div className="md:col-span-2"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Reason</p><p className="font-bold text-slate-700 text-sm">{formData.reason || 'N/A'}</p></div>
+                                    <div className="md:col-span-2 pt-4 border-t border-slate-200"><p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Document</p><p className="font-bold text-blue-500 text-sm">{formData.filename || 'No document uploaded'}</p></div>
+                                </div>
+                                <label className="flex items-center gap-3 cursor-pointer mt-6 p-4 border border-slate-200 rounded-xl bg-white">
+                                    <input type="checkbox" checked={formData.confirmed} onChange={e=>setFormData({...formData, confirmed: e.target.checked})} className="w-5 h-5 accent-emerald-500" />
+                                    <span className="text-xs font-bold text-slate-600">I confirm that the information provided is correct and genuine.</span>
+                                </label>
+                            </div>
+                        )}
+
+                        <div className="flex justify-between mt-10 pt-6 border-t border-slate-100">
+                            {step > 1 ? (
+                                <button onClick={()=>setStep(step-1)} className="bg-slate-100 hover:bg-slate-200 text-slate-600 px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all">BACK</button>
+                            ) : <div></div>}
+                            
+                            {step < 5 ? (
+                                <button onClick={()=>setStep(step+1)} className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:shadow-lg text-white px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest shadow-md transition-all">NEXT</button>
+                            ) : (
+                                <button disabled={!formData.confirmed} onClick={submitApplication} className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${formData.confirmed ? 'bg-gradient-to-r from-emerald-400 to-teal-500 text-white shadow-md hover:shadow-lg' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}>SUBMIT OD APPLICATION</button>
+                            )}
+                        </div>
+                    </div>
+                </motion.div>
+            );
+        };
+
+        const renderSuccess = () => (
+            <motion.div initial={{opacity:0, scale:0.9}} animate={{opacity:1, scale:1}} className="max-w-lg mx-auto bg-white/85 backdrop-blur-2xl rounded-[32px] p-12 shadow-glass border border-white text-center">
+                <div className="w-24 h-24 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner"><Icons.CheckSquare /></div>
+                <h2 className="text-xl font-black text-slate-800 mb-2 uppercase">✓ OD APPLICATION SUBMITTED</h2>
+                <p className="text-sm font-bold text-slate-500 mb-8">Your On-Duty request has been submitted successfully.</p>
+                <div className="bg-slate-50 border border-slate-200 p-6 rounded-2xl mb-8 space-y-4 text-left">
+                    <div className="flex justify-between items-center border-b border-slate-100 pb-2"><span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Application ID</span><span className="text-sm font-black text-slate-800">{currentAppId}</span></div>
+                    <div className="flex justify-between items-center border-b border-slate-100 pb-2"><span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Status</span><StatusBadge status="PENDING VERIFICATION" /></div>
+                    <div className="flex justify-between items-center"><span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Submission Date</span><span className="text-xs font-bold text-slate-700">{new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span></div>
+                </div>
+                <div className="flex flex-col gap-3">
+                    <button onClick={()=>setView('track')} className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:shadow-lg text-white px-6 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md transition-all">TRACK APPLICATION</button>
+                    <button onClick={()=>setView('dashboard')} className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 px-6 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">BACK TO OD DASHBOARD</button>
+                </div>
+            </motion.div>
+        );
+
+        const renderTracker = () => {
+            if (!currentApp) return null;
+            return (
+                <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} exit={{opacity:0, y:-20}} className="max-w-6xl mx-auto flex flex-col gap-6">
+                    <div className="flex justify-between items-center bg-white/70 backdrop-blur-xl p-8 rounded-[32px] shadow-glass border border-white">
+                        <div>
+                            <h2 className="text-3xl font-black text-slate-800 uppercase">OD APPLICATION TRACKER</h2>
+                            <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mt-2">{currentApp.id} • {currentApp.eventName}</p>
+                        </div>
+                        <button onClick={()=>setView('dashboard')} className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest shadow-sm transition-all">✕ CLOSE TRACKER</button>
+                    </div>
+
+                    <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                        <div className="xl:col-span-2 bg-white/85 backdrop-blur-2xl rounded-[32px] p-10 shadow-glass border border-white">
+                            <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 mb-8 border-b border-slate-100 pb-4">Verification Timeline</h3>
+                            
+                            <div className="relative pl-8 space-y-10 before:absolute before:inset-0 before:ml-[1.4rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-emerald-300 before:via-blue-300 before:to-slate-200">
+                                <div className="relative flex items-center gap-6">
+                                    <div className="absolute -left-12 w-8 h-8 rounded-full bg-emerald-500 border-4 border-white shadow-md flex items-center justify-center text-white text-xs font-black z-10">✓</div>
+                                    <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-xl flex-1">
+                                        <h4 className="text-xs font-black uppercase tracking-widest text-emerald-700">Application Submitted</h4>
+                                        <p className="text-[10px] font-bold text-slate-500">{currentApp.submitDate}</p>
+                                    </div>
+                                </div>
+                                
+                                <div className={`relative flex items-center gap-6 ${currentApp.stage==='mentor'||currentApp.stage==='advisor'||currentApp.stage==='coordinator'||currentApp.stage==='completed' ? 'opacity-100' : 'opacity-50'}`}>
+                                    <div className={`absolute -left-12 w-8 h-8 rounded-full border-4 border-white shadow-md flex items-center justify-center text-white text-xs font-black z-10 ${currentApp.approvals.mentor==='approved'?'bg-emerald-500':currentApp.approvals.mentor==='rejected'?'bg-rose-500':'bg-blue-500 animate-pulse'}`}>{currentApp.approvals.mentor==='approved'?'✓':currentApp.approvals.mentor==='rejected'?'✕':'●'}</div>
+                                    <div className={`border p-4 rounded-xl flex-1 ${currentApp.approvals.mentor==='rejected'?'bg-rose-50 border-rose-100':'bg-slate-50 border-slate-200'}`}>
+                                        <h4 className={`text-xs font-black uppercase tracking-widest ${currentApp.approvals.mentor==='rejected'?'text-rose-700':'text-slate-700'}`}>Mentor Verification</h4>
+                                        <p className="text-[10px] font-bold text-slate-500">{currentApp.approvals.mentor.toUpperCase()}</p>
+                                    </div>
+                                </div>
+
+                                <div className={`relative flex items-center gap-6 ${currentApp.stage==='advisor'||currentApp.stage==='coordinator'||currentApp.stage==='completed' ? 'opacity-100' : 'opacity-40'}`}>
+                                    <div className={`absolute -left-12 w-8 h-8 rounded-full border-4 border-white shadow-md flex items-center justify-center text-white text-xs font-black z-10 ${currentApp.approvals.advisor==='approved'?'bg-emerald-500':currentApp.approvals.advisor==='rejected'?'bg-rose-500':currentApp.stage==='advisor'?'bg-blue-500 animate-pulse':'bg-slate-300'}`}>{currentApp.approvals.advisor==='approved'?'✓':currentApp.approvals.advisor==='rejected'?'✕':currentApp.stage==='advisor'?'●':'○'}</div>
+                                    <div className={`border p-4 rounded-xl flex-1 ${currentApp.approvals.advisor==='rejected'?'bg-rose-50 border-rose-100':'bg-slate-50 border-slate-200'}`}>
+                                        <h4 className={`text-xs font-black uppercase tracking-widest ${currentApp.approvals.advisor==='rejected'?'text-rose-700':'text-slate-700'}`}>Advisor Verification</h4>
+                                        <p className="text-[10px] font-bold text-slate-500">{currentApp.approvals.advisor==='pending' && currentApp.stage!=='advisor' ? 'Awaiting Mentor' : currentApp.approvals.advisor.toUpperCase()}</p>
+                                    </div>
+                                </div>
+
+                                <div className={`relative flex items-center gap-6 ${currentApp.stage==='coordinator'||currentApp.stage==='completed' ? 'opacity-100' : 'opacity-40'}`}>
+                                    <div className={`absolute -left-12 w-8 h-8 rounded-full border-4 border-white shadow-md flex items-center justify-center text-white text-xs font-black z-10 ${currentApp.approvals.coordinator==='approved'?'bg-emerald-500':currentApp.approvals.coordinator==='rejected'?'bg-rose-500':currentApp.stage==='coordinator'?'bg-blue-500 animate-pulse':'bg-slate-300'}`}>{currentApp.approvals.coordinator==='approved'?'✓':currentApp.approvals.coordinator==='rejected'?'✕':currentApp.stage==='coordinator'?'●':'○'}</div>
+                                    <div className={`border p-4 rounded-xl flex-1 ${currentApp.approvals.coordinator==='rejected'?'bg-rose-50 border-rose-100':'bg-slate-50 border-slate-200'}`}>
+                                        <h4 className={`text-xs font-black uppercase tracking-widest ${currentApp.approvals.coordinator==='rejected'?'text-rose-700':'text-slate-700'}`}>Coordinator Verification</h4>
+                                        <p className="text-[10px] font-bold text-slate-500">{currentApp.approvals.coordinator==='pending' && currentApp.stage!=='coordinator' ? 'Awaiting Advisor' : currentApp.approvals.coordinator.toUpperCase()}</p>
+                                    </div>
+                                </div>
+
+                                <div className={`relative flex items-center gap-6 ${currentApp.stage==='completed' ? 'opacity-100' : 'opacity-30'}`}>
+                                    <div className={`absolute -left-12 w-8 h-8 rounded-full border-4 border-white shadow-md flex items-center justify-center text-white text-xs font-black z-10 ${currentApp.stage==='completed'?'bg-emerald-500':'bg-slate-300'}`}>{currentApp.stage==='completed'?'✓':'○'}</div>
+                                    <div className={`border p-4 rounded-xl flex-1 ${currentApp.stage==='completed'?'bg-emerald-50 border-emerald-200':'bg-slate-50 border-slate-200'}`}>
+                                        <h4 className={`text-xs font-black uppercase tracking-widest ${currentApp.stage==='completed'?'text-emerald-700':'text-slate-700'}`}>OD Approved</h4>
+                                        {currentApp.stage==='completed' && <button onClick={()=>setView('pass')} className="mt-3 bg-emerald-500 text-white px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest shadow-sm">VIEW DIGITAL PASS</button>}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {currentApp.status === 'REJECTED' && (
+                                <div className="mt-10 bg-rose-50 border border-rose-200 p-6 rounded-2xl animate-fadeIn">
+                                    <h4 className="text-sm font-black uppercase tracking-widest text-rose-700 mb-2">OD APPLICATION REJECTED</h4>
+                                    <p className="text-xs font-bold text-slate-700 mb-1">Reason: "{currentApp.rejectReason}"</p>
+                                    <button onClick={() => { setFormData({...initForm, ...currentApp}); setStep(1); setView('apply'); }} className="mt-4 bg-white border border-rose-200 text-rose-600 px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm hover:bg-rose-100 transition-all">EDIT & RESUBMIT</button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Demo Controls Panel */}
+                        <div className="bg-white/85 backdrop-blur-2xl rounded-[32px] p-8 shadow-glass border border-white h-fit sticky top-10">
+                            <h3 className="text-[10px] font-black uppercase tracking-widest text-indigo-500 mb-2 bg-indigo-50 p-2 rounded-lg text-center border border-indigo-100">FRONTEND DEMO CONTROLS</h3>
+                            <p className="text-[10px] font-bold text-slate-500 mb-6 text-center leading-relaxed">Simulate the backend approval process to watch the timeline react instantly.</p>
+                            
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Mentor Approval</label>
+                                    <select value={currentApp.approvals.mentor} onChange={(e)=>updateApproval(currentApp.id, 'mentor', e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 outline-none">
+                                        <option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option>
+                                    </select>
+                                </div>
+                                <div className={currentApp.stage==='mentor' ? 'opacity-50 pointer-events-none' : ''}>
+                                    <label className="block text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Advisor Approval</label>
+                                    <select disabled={currentApp.stage==='mentor'} value={currentApp.approvals.advisor} onChange={(e)=>updateApproval(currentApp.id, 'advisor', e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 outline-none">
+                                        <option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option>
+                                    </select>
+                                </div>
+                                <div className={currentApp.stage==='mentor' || currentApp.stage==='advisor' ? 'opacity-50 pointer-events-none' : ''}>
+                                    <label className="block text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Coordinator Approval</label>
+                                    <select disabled={currentApp.stage==='mentor' || currentApp.stage==='advisor'} value={currentApp.approvals.coordinator} onChange={(e)=>updateApproval(currentApp.id, 'coordinator', e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 outline-none">
+                                        <option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+            );
+        };
+
+        const renderPass = () => {
+            if (!currentApp) return null;
+            return (
+                <motion.div initial={{opacity:0, scale:0.95}} animate={{opacity:1, scale:1}} exit={{opacity:0, scale:0.95}} className="max-w-2xl mx-auto flex flex-col gap-6">
+                    <div className="flex justify-between items-center bg-white/70 backdrop-blur-xl p-6 rounded-2xl shadow-glass border border-white no-print">
+                        <button onClick={()=>setView('dashboard')} className="text-slate-400 hover:text-slate-600 font-bold text-sm">← Back</button>
+                        <button onClick={()=>window.print()} className="bg-slate-800 text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">PRINT / SAVE PASS</button>
+                    </div>
+
+                    <div className="bg-white rounded-[32px] shadow-2xl border border-slate-200 overflow-hidden relative print:shadow-none print:border-2 print:border-black">
+                        <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-8 text-center relative">
+                            <h2 className="text-3xl font-black text-white uppercase tracking-widest">DIGITAL OD PASS</h2>
+                            <p className="text-emerald-100 font-bold text-sm uppercase tracking-widest mt-1">SMART CAMPUS HUB</p>
+                            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-white rotate-45"></div>
+                        </div>
+                        
+                        <div className="p-10 pt-12 relative bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-50 to-white">
+                            <div className="absolute right-10 top-10 text-center opacity-80">
+                                <div className="w-24 h-24 bg-white border-4 border-slate-800 p-1 mx-auto relative grid grid-cols-4 grid-rows-4 gap-0.5">
+                                    {[...Array(16)].map((_,i)=><div key={i} className={Math.random()>0.4?'bg-slate-800':'bg-transparent'}></div>)}
+                                </div>
+                                <p className="text-[8px] font-black uppercase tracking-widest text-emerald-600 mt-2 bg-emerald-50 border border-emerald-200 rounded px-1">✓ Digitally Verified</p>
+                            </div>
+
+                            <div className="space-y-6 max-w-sm">
+                                <div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Student</p><p className="text-xl font-black text-slate-800">{currentApp.studentName}</p><p className="text-xs font-bold text-slate-500">{currentApp.studentId} • {currentApp.department}</p></div>
+                                <div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Event</p><p className="text-sm font-bold text-slate-700">{currentApp.eventName}</p><p className="text-xs font-bold text-slate-500">{currentApp.venue}</p></div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">OD Date</p><p className="text-sm font-bold text-slate-700">{currentApp.odDate}</p></div>
+                                    <div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Duration</p><p className="text-sm font-bold text-slate-700">{currentApp.days || 1} Day(s)</p></div>
+                                </div>
+                                <div className="pt-6 border-t-2 border-dashed border-slate-200 flex justify-between items-end">
+                                    <div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Application ID</p><p className="font-mono text-sm font-black text-slate-700">{currentApp.id}</p></div>
+                                    <div className="bg-emerald-100 text-emerald-600 border border-emerald-200 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">STATUS: APPROVED</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+            );
+        };
+        const renderFacultyDashboard = () => {
+            const pendingCount = apps.filter(a => a.status === 'PENDING').length;
+            const approvedCount = apps.filter(a => a.status === 'APPROVED').length;
+            const rejectedCount = apps.filter(a => a.status === 'REJECTED').length;
+
+            const filteredApps = apps.filter(a => filter === 'ALL' || a.status === filter);
+            const displayedApps = filteredApps.slice(0, visibleCount);
+
+            return (
+                <motion.div initial={{opacity:0}} animate={{opacity:1}} className="max-w-6xl mx-auto space-y-8">
+                    <div className="flex justify-between items-center bg-white/70 backdrop-blur-xl p-8 rounded-[32px] shadow-glass border border-white">
+                        <div>
+                            <h2 className="text-3xl font-black text-slate-800">SMART OD VERIFICATION</h2>
+                            <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mt-2">Review and verify student OD requests</p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div className="bg-white/85 backdrop-blur-xl rounded-3xl p-6 shadow-glass border border-white flex flex-col items-center text-center">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Total Requests</p>
+                            <p className="text-3xl font-black text-slate-800">{apps.length}</p>
+                        </div>
+                        <div className="bg-white/85 backdrop-blur-xl rounded-3xl p-6 shadow-glass border border-white flex flex-col items-center text-center">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-amber-500 mb-1">Pending</p>
+                            <p className="text-3xl font-black text-amber-600">{pendingCount}</p>
+                        </div>
+                        <div className="bg-white/85 backdrop-blur-xl rounded-3xl p-6 shadow-glass border border-white flex flex-col items-center text-center">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500 mb-1">Approved</p>
+                            <p className="text-3xl font-black text-emerald-600">{approvedCount}</p>
+                        </div>
+                        <div className="bg-white/85 backdrop-blur-xl rounded-3xl p-6 shadow-glass border border-white flex flex-col items-center text-center">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-rose-500 mb-1">Rejected</p>
+                            <p className="text-3xl font-black text-rose-600">{rejectedCount}</p>
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-[32px] p-8 shadow-sm border border-slate-100">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                            <h3 className="text-lg font-black text-slate-800">Student Requests</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {['ALL', 'PENDING', 'APPROVED', 'REJECTED'].map(f => (
+                                    <button key={f} onClick={() => { setFilter(f); setVisibleCount(10); }} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all outline-none ${filter === f ? 'bg-slate-800 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
+                                        {f}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            {displayedApps.length === 0 && (
+                                <div className="text-center py-12 bg-slate-50 rounded-3xl border border-slate-100">
+                                    <p className="text-sm font-bold text-slate-500">No requests found for this filter.</p>
+                                </div>
+                            )}
+                            {displayedApps.map(app => (
+                                <div key={app.id} className="border border-slate-100 rounded-3xl p-6 bg-slate-50 hover:bg-white hover:shadow-lg transition-all flex flex-col md:flex-row gap-6 items-start md:items-center">
+                                    <div className="flex-1 space-y-4">
+                                        <div className="flex items-center gap-3">
+                                            <span className="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">{app.id}</span>
+                                            <h4 className="text-lg font-black text-slate-800">{app.studentName || 'Demo Student'} <span className="text-sm text-slate-400 font-bold ml-1">({app.studentId || 'ID Unavailable'})</span></h4>
+                                        </div>
+                                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 bg-white p-4 rounded-2xl border border-slate-100">
+                                            <div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Event Name</p><p className="text-xs font-black text-slate-700">{app.eventName}</p></div>
+                                            <div><p className="text-[9px] font-black uppercase tracking-widest text-slate-400">OD Date</p><p className="text-xs font-black text-slate-700">{app.odDate}</p></div>
+                                            <div>
+                                                <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Academic Cal.</p>
+                                                {app.academicConflict ? <span className="text-[9px] font-black bg-rose-100 text-rose-600 px-2 py-1 rounded">⚠ EXAM CONFLICT</span> : <span className="text-[9px] font-black bg-emerald-100 text-emerald-600 px-2 py-1 rounded">✓ NO CONFLICT</span>}
+                                            </div>
+                                            <div>
+                                                <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Event Check</p>
+                                                {app.officialEvent ? <span className="text-[9px] font-black bg-emerald-100 text-emerald-600 px-2 py-1 rounded">✓ OFFICIAL</span> : <span className="text-[9px] font-black bg-amber-100 text-amber-600 px-2 py-1 rounded">⚠ UNOFFICIAL</span>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-2 min-w-[160px]">
+                                        <div className="text-center mb-2">
+                                            <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full ${app.status==='APPROVED'?'bg-emerald-100 text-emerald-600':app.status==='REJECTED'?'bg-rose-100 text-rose-600':'bg-blue-100 text-blue-600'}`}>{app.status}</span>
+                                        </div>
+                                        {app.status === 'PENDING' && !rejectPrompt && (
+                                            <>
+                                                <button disabled={app.academicConflict || !app.officialEvent} onClick={() => handleFacultyDecision(app.id, 'approved')} className="bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-300 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">APPROVE OD</button>
+                                                <button onClick={() => { setRejectPrompt(app.id); setRejectReason('OD rejected due to examination schedule.'); }} className="bg-rose-100 hover:bg-rose-200 text-rose-600 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">REJECT OD</button>
+                                                {(app.academicConflict || !app.officialEvent) && <p className="text-[8px] text-center font-black text-rose-500 uppercase mt-1">APPROVAL BLOCKED</p>}
+                                            </>
+                                        )}
+                                        {rejectPrompt === app.id && (
+                                            <div className="flex flex-col gap-2 mt-2 bg-rose-50 p-3 rounded-2xl border border-rose-100">
+                                                <p className="text-[9px] font-black uppercase tracking-widest text-rose-600">Select Reason:</p>
+                                                <select value={rejectReason} onChange={e=>setRejectReason(e.target.value)} className="w-full text-[10px] font-bold text-slate-700 bg-white border border-rose-200 rounded-lg p-2 outline-none">
+                                                    <option>OD rejected due to examination schedule.</option>
+                                                    <option>OD rejected due to academic event conflict.</option>
+                                                    <option>OD rejected because the event is not officially verified.</option>
+                                                    <option>Insufficient details provided.</option>
+                                                </select>
+                                                <div className="flex gap-2 mt-1">
+                                                    <button onClick={() => setRejectPrompt(null)} className="flex-1 py-2 bg-white border border-slate-200 text-slate-500 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-slate-50">Cancel</button>
+                                                    <button onClick={() => { handleFacultyDecision(app.id, 'rejected', rejectReason); setRejectPrompt(null); }} className="flex-1 py-2 bg-rose-500 text-white rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-rose-600 shadow-sm">Confirm</button>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+
+                            {visibleCount < filteredApps.length && (
+                                <div className="text-center pt-6">
+                                    <button onClick={() => setVisibleCount(v => v + 10)} className="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
+                                        Load More Requests ({filteredApps.length - visibleCount} Remaining)
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </motion.div>
+            );
+        };
+        return (
+            <div className="relative">
+                <AnimatePresence mode="wait">
+                    {view === 'dashboard' && isFaculty ? renderFacultyDashboard() : view === 'dashboard' ? renderDashboard() : null}
+                    {view === 'apply' && renderApplyForm()}
+                    {view === 'success' && renderSuccess()}
+                    {view === 'track' && renderTracker()}
+                    {view === 'pass' && renderPass()}
+                </AnimatePresence>
+                <AnimatePresence>
+                  {toast && (
+                     <motion.div initial={{opacity:0, y:50, x:'-50%'}} animate={{opacity:1, y:0, x:'-50%'}} exit={{opacity:0, y:50, x:'-50%'}} className="fixed bottom-10 left-1/2 z-[200] bg-slate-800 text-white rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.3)] px-6 py-3 flex items-center gap-3">
+                        <Icons.Bell />
+                        <span className="text-xs font-bold tracking-wide">{toast}</span>
+                     </motion.div>
+                  )}
+               </AnimatePresence>
+            </div>
+        );
+    };
+    // --- LOGIN SYSTEM ---
+    const AdminDashboardSystem = ({ auth }) => {
+        const [staffData] = useState(() => JSON.parse(localStorage.getItem('cf_staff')) || []);
+        const [feeSlots] = useState(() => JSON.parse(localStorage.getItem('cf_fee_slots')) || []);
+        const [apps] = useState(() => JSON.parse(localStorage.getItem('smartod_apps')) || []);
+        const [activity] = useState(() => JSON.parse(localStorage.getItem('cf_activity')) || []);
+
+        return (
+            <motion.div initial={{opacity:0}} animate={{opacity:1}} className="max-w-[1600px] mx-auto space-y-8 pb-12">
+                <div className="flex justify-between items-center bg-white/70 backdrop-blur-xl p-8 rounded-[32px] shadow-glass border border-white">
+                    <div>
+                        <h2 className="text-3xl font-black text-slate-800 tracking-tight">System Admin Overview</h2>
+                        <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mt-2">Live Campus Monitoring</p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100"><p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Total Students</p><p className="text-4xl font-black text-slate-800">4,250</p></div>
+                    <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100"><p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Total Faculty</p><p className="text-4xl font-black text-blue-600">{staffData.length}</p></div>
+                    <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100"><p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Fee Slots Booked</p><p className="text-4xl font-black text-emerald-600">{feeSlots.filter(s=>s.status!=='AVAILABLE').length}</p></div>
+                    <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100"><p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">OD Applications</p><p className="text-4xl font-black text-purple-600">{apps.length}</p></div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Activity Feed */}
+                    <div className="lg:col-span-1 bg-white rounded-3xl p-6 shadow-sm border border-slate-100 h-[400px] overflow-y-auto">
+                        <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 mb-6 sticky top-0 bg-white pb-2">Recent System Activity</h3>
+                        <div className="space-y-4">
+                            {activity.map(act => (
+                                <div key={act.id} className="border-l-2 border-blue-200 pl-4 py-1">
+                                    <p className="text-xs font-bold text-slate-700">{act.text}</p>
+                                    <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mt-1">{new Date(act.time).toLocaleTimeString()}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Staff Distribution */}
+                    <div className="lg:col-span-2 space-y-6">
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+                            <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 mb-6">Staff Availability by Department</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                {['CSE','IT','ECE','EEE','MECH','CIVIL','VLSI','MBA','MCA'].map(dept => {
+                                    const deptStaff = staffData.filter(s => s.department === dept);
+                                    const available = deptStaff.filter(s => s.status === 'AVAILABLE').length;
+                                    return (
+                                        <div key={dept} className="bg-slate-50 border border-slate-100 rounded-2xl p-4">
+                                            <p className="text-xs font-black uppercase tracking-widest text-slate-700 mb-2">{dept}</p>
+                                            <div className="flex justify-between items-center"><span className="text-[10px] font-bold text-slate-500">Available</span><span className="text-sm font-black text-emerald-600">{available}/{deptStaff.length}</span></div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </motion.div>
+        );
+    };
+    const LoginPage = ({ onLogin }) => {
+        const [savedUser] = useState(() => {
+            try { return JSON.parse(localStorage.getItem('cf_remembered_user') || 'null'); } catch(e) { return null; }
+        });
+        
+        const [role, setRole] = useState(savedUser?.role || 'student');
+        const [username, setUsername] = useState(savedUser?.username || '');
+        const [password, setPassword] = useState('');
+        const [showPassword, setShowPassword] = useState(false);
+        const [rememberMe, setRememberMe] = useState(!!savedUser);
+        const [error, setError] = useState('');
+        const [isAuthenticating, setIsAuthenticating] = useState(false);
+        const [success, setSuccess] = useState(false);
+        const [failedAttempts, setFailedAttempts] = useState(0);
+        const [lockoutTimer, setLockoutTimer] = useState(0);
+
+        useEffect(() => {
+            let int;
+            if (lockoutTimer > 0) {
+                int = setInterval(() => setLockoutTimer(t => t - 1), 1000);
+            }
+            return () => clearInterval(int);
+        }, [lockoutTimer]);
+
+        const handleLogin = (e) => {
+            e.preventDefault();
+            if (lockoutTimer > 0) return;
+            if (!username.trim()) return setError("Please enter your username.");
+            if (!password) return setError("Please enter your password.");
+
+            setIsAuthenticating(true);
+            setError('');
+
+            setTimeout(() => {
+                let valid = false;
+                let name = '';
+                if (role === 'student' && username === 'student001' && password === 'Student@123') { valid = true; name = 'Priyanka S'; }
+                if (role === 'faculty' && username === 'faculty001' && password === 'Faculty@123') { valid = true; name = 'Dr. Anitha Kumar'; }
+                if (role === 'admin' && username === 'admin001' && password === 'Admin@123') { valid = true; name = 'System Admin'; }
+
+                if (valid) {
+                    if (rememberMe) {
+                        localStorage.setItem('cf_remembered_user', JSON.stringify({ username, role }));
+                    } else {
+                        localStorage.removeItem('cf_remembered_user');
+                    }
+                    
+                    setFailedAttempts(0);
+                    setSuccess(true);
+                    setTimeout(() => {
+                        onLogin({ isLoggedIn: true, role, username, name });
+                    }, 1000);
+                } else {
+                    setIsAuthenticating(false);
+                    const attempts = failedAttempts + 1;
+                    setFailedAttempts(attempts);
+                    if (attempts >= 3) {
+                        setLockoutTimer(15);
+                        setError(`Too many failed attempts. Please try again in 15 seconds.`);
+                    } else {
+                        setError("Invalid username or password.");
+                    }
+                }
+            }, 1000);
+        };
+
+        return (
+            <div className="min-h-screen w-full flex items-center justify-center bg-[#0f172a] text-slate-800 font-sans relative zoom-bg">
+                <div className="w-full flex items-center justify-center p-6 bg-slate-50/5 relative z-10">
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md relative z-10 my-8">
+                        <div className="bg-white rounded-[32px] shadow-2xl p-8 border border-slate-100">
+                            <div className="text-center mb-8">
+                                <h2 className="text-3xl font-black text-slate-800 tracking-tight">WELCOME BACK</h2>
+                                <p className="text-sm font-bold text-slate-500 mt-2">Welcome back! Sign in to continue.</p>
+                            </div>
+
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">LOGIN AS</p>
+                            <div className="flex gap-1 mb-8 bg-slate-100 p-1.5 rounded-2xl">
+                                <button type="button" onClick={()=>setRole('student')} className={`flex-1 py-3 rounded-xl text-xs font-black uppercase tracking-widest flex flex-col items-center justify-center gap-1.5 transition-all ${role==='student' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:bg-slate-200/50'}`}><Icons.Users /> STUDENT</button>
+                                <button type="button" onClick={()=>setRole('faculty')} className={`flex-1 py-3 rounded-xl text-xs font-black uppercase tracking-widest flex flex-col items-center justify-center gap-1.5 transition-all ${role==='faculty' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:bg-slate-200/50'}`}><Icons.Document /> FACULTY</button>
+                                <button type="button" onClick={()=>setRole('admin')} className={`flex-1 py-3 rounded-xl text-xs font-black uppercase tracking-widest flex flex-col items-center justify-center gap-1.5 transition-all ${role==='admin' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:bg-slate-200/50'}`}><Icons.Settings /> ADMIN</button>
+                            </div>
+
+                            <form onSubmit={handleLogin} className="space-y-5">
+                                {error && <div className="bg-rose-50 text-rose-600 border border-rose-200 p-3 rounded-xl text-xs font-bold text-center">{error}</div>}
+                                
+                                <div>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <label htmlFor="username" className="block text-[10px] font-black uppercase tracking-widest text-slate-500">Username / {role==='student'?'Student ID':role==='faculty'?'Faculty ID':'Admin ID'}</label>
+                                        {rememberMe && username && (
+                                            <button type="button" onClick={() => { setUsername(''); setRememberMe(false); localStorage.removeItem('cf_remembered_user'); }} className="text-[9px] font-black uppercase tracking-widest text-rose-500 hover:text-rose-600 focus:outline-none">
+                                                Forget ID
+                                            </button>
+                                        )}
+                                    </div>
+                                    <input id="username" type="text" autoComplete="username" value={username} onChange={e=>setUsername(e.target.value)} placeholder={role==='student'?'Enter Student ID':role==='faculty'?'Enter Faculty ID':'Enter Admin ID'} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-slate-700 font-bold outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all" />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="password" className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Password</label>
+                                    <div className="relative">
+                                        <input id="password" type={showPassword?'text':'password'} autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Enter Password" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-slate-700 font-bold outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all" />
+                                        <button type="button" onClick={()=>setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-lg font-black outline-none" aria-label="Toggle Password Visibility">👁</button>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center justify-between mt-6">
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" checked={rememberMe} onChange={e=>setRememberMe(e.target.checked)} className="w-4 h-4 accent-blue-500" />
+                                        <span className="text-xs font-bold text-slate-600">Remember me</span>
+                                    </label>
+                                    <div className="flex gap-4 items-center">
+                                        <button type="button" onClick={()=>alert("Please contact the IT Helpdesk to reset your password.")} className="text-xs font-bold text-slate-400 hover:text-slate-600">Forgot Password?</button>
+                                    </div>
+                                </div>
+
+                                <button disabled={lockoutTimer > 0 || isAuthenticating || success} type="submit" className={`w-full py-4 rounded-xl text-xs font-black uppercase tracking-widest shadow-md transition-all mt-4 flex items-center justify-center gap-2 ${success ? 'bg-emerald-500 text-white shadow-emerald-500/30' : lockoutTimer > 0 ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:shadow-lg hover:-translate-y-0.5 outline-none'}`}>
+                                    {success ? '✓ AUTHENTICATED' : isAuthenticating ? 'AUTHENTICATING...' : lockoutTimer > 0 ? `Try again in ${lockoutTimer}s` : 'LOGIN'}
+                                </button>
+                            </form>
+                            
+                        </div>
+                    </motion.div>
+                </div>
+            </div>
+        );
+    };
+
+    // --- MAIN APP WRAPPER (Handles Auth & Session) ---
+    const CampusFlowApp = () => {
+        const [auth, setAuth] = useState(() => {
+            try {
+                const session = sessionStorage.getItem('cf_auth');
+                if (session) {
+                    const parsed = JSON.parse(session);
+                    if (parsed && parsed.isLoggedIn && parsed.role && parsed.username) return parsed;
+                }
+            } catch (e) {
+                sessionStorage.removeItem('cf_auth');
+            }
+            return null;
+        });
+
+        const [showWarning, setShowWarning] = useState(false);
+
+        useEffect(() => {
+            if (!auth) return;
+            let timeout;
+            let warningTimeout;
+
+            const resetTimers = () => {
+                clearTimeout(timeout);
+                clearTimeout(warningTimeout);
+                
+                // 30 min = 1800000 ms, 29 min = 1740000 ms
+                warningTimeout = setTimeout(() => {
+                    setShowWarning(true);
+                }, 1740000);
+
+                timeout = setTimeout(() => {
+                    handleLogout();
+                    alert("Your session has expired. Please login again.");
+                }, 1800000);
+            };
+
+            window.addEventListener('mousemove', resetTimers);
+            window.addEventListener('keydown', resetTimers);
+            window.addEventListener('click', resetTimers);
+            window.addEventListener('scroll', resetTimers);
+            resetTimers();
+
+            return () => {
+                window.removeEventListener('mousemove', resetTimers);
+                window.removeEventListener('keydown', resetTimers);
+                window.removeEventListener('click', resetTimers);
+                window.removeEventListener('scroll', resetTimers);
+                clearTimeout(timeout);
+                clearTimeout(warningTimeout);
+            };
+        }, [auth]);
+
+        const handleLogin = (data) => {
+            // Active session ALWAYS goes to sessionStorage (never bypass login permanently)
+            sessionStorage.removeItem('cf_auth');
+            const authObj = { isLoggedIn: true, role: data.role, username: data.username, name: data.name };
+            sessionStorage.setItem('cf_auth', JSON.stringify(authObj));
+            setAuth(authObj);
+        };
+
+        const handleLogout = () => {
+            sessionStorage.removeItem('cf_auth');
+            setAuth(null);
+            setShowWarning(false);
+        };
+
+        if (!auth) {
+            return <LoginPage onLogin={handleLogin} />;
+        }
+
+        return (
+            <>
+                <DashboardLayout auth={auth} onLogout={handleLogout} />
+                <AnimatePresence>
+                    {showWarning && (
+                        <div className="fixed inset-0 z-[999] flex items-center justify-center p-4">
+                            <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></motion.div>
+                            <motion.div initial={{scale:0.9, opacity:0}} animate={{scale:1, opacity:1}} exit={{scale:0.9, opacity:0}} className="relative bg-white rounded-3xl shadow-2xl p-8 max-w-sm w-full z-10 border border-slate-100 text-center">
+                                <div className="w-16 h-16 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">⏳</div>
+                                <h3 className="text-lg font-black text-slate-800 mb-2">Session Expiring</h3>
+                                <p className="text-sm font-bold text-slate-500 mb-6">Your session is about to expire due to inactivity.</p>
+                                <div className="flex gap-3">
+                                    <button onClick={handleLogout} className="flex-1 bg-slate-100 text-slate-600 hover:bg-slate-200 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">LOGOUT</button>
+                                    <button onClick={()=>setShowWarning(false)} className="flex-1 bg-amber-500 text-white hover:bg-amber-600 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md">STAY LOGGED IN</button>
+                                </div>
+                            </motion.div>
+                        </div>
+                    )}
+                </AnimatePresence>
+            </>
+        );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<CampusFlowApp />);
+  </script>
+</body>
+</html>
+

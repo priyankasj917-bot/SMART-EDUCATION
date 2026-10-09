@@ -1,0 +1,62 @@
+﻿        const [filterStatus, setFilterStatus] = useState('All Status');
+        const [searchQ, setSearchQ] = useState('');
+
+        const isFaculty = auth?.role === 'faculty';
+        const myStaffRecord = staffData.find(s => s.id === auth?.username);
+
+        const handleStatusChange = (newStatus) => {
+            const updated = staffData.map(s => s.id === auth?.username ? { ...s, status: newStatus } : s);
+            localStorage.setItem('cf_staff', JSON.stringify(updated));
+            setStaffData(updated);
+
+            const acts = JSON.parse(localStorage.getItem('cf_activity')||'[]');
+            acts.unshift({ id: Date.now(), text: `${auth?.name} changed status to ${newStatus}`, time: new Date().toISOString() });
+            localStorage.setItem('cf_activity', JSON.stringify(acts));
+        };
+
+        const filteredStaff = staffData.filter(s => {
+            if (filterDept !== 'All Departments' && s.department !== filterDept) return false;
+            if (filterStatus !== 'All Status' && s.status !== filterStatus) return false;
+            if (searchQ && !s.name.toLowerCase().includes(searchQ.toLowerCase())) return false;
+            return true;
+        });
+
+        const statusColors = {
+            'AVAILABLE': 'bg-emerald-500',
+            'BUSY': 'bg-rose-500',
+            'EXAM-HALL DUTY': 'bg-purple-500',
+            'LEAVE': 'bg-slate-400',
+            'HALF-DAY PERMISSION': 'bg-orange-500'
+        };
+
+        return (
+            <motion.div initial={{opacity:0}} animate={{opacity:1}} className="max-w-[1400px] mx-auto space-y-8">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-white/10 pb-6">
+                    <div>
+                        <h2 className="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-3">
+                            STAFF AVAILABILITY MATRIX <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                        </h2>
+                        <p className="text-sm font-bold text-slate-500 mt-2 tracking-wide uppercase">Find the right staff member at the right time.</p>
+                    </div>
+                </div>
+
+                {isFaculty && myStaffRecord && (
+                    <div className="bg-white rounded-3xl p-6 shadow-sm border border-indigo-100 mb-8 flex items-center justify-between">
+                        <div>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-1">My Current Availability</p>
+                            <h3 className="text-lg font-black text-slate-800">{auth.name}</h3>
+                        </div>
+                        <select 
+                            value={myStaffRecord.status} 
+                            onChange={(e) => handleStatusChange(e.target.value)}
+                            className="bg-slate-50 border border-slate-200 text-sm font-black text-slate-700 px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20"
+                        >
+                            <option value="AVAILABLE">Available</option>
+                            <option value="BUSY">Busy</option>
+                            <option value="EXAM-HALL DUTY">Exam-Hall Duty</option>
+                            <option value="LEAVE">Leave</option>
+                            <option value="HALF-DAY PERMISSION">Half-Day Permission</option>
+                        </select>
+                    </div>
+                )}
+
